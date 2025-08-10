@@ -5,7 +5,7 @@ import Card from '../ui/Card'
 
 const ShareCatalog = ({ vendor, onClose }) => {
   const [copied, setCopied] = useState(false)
-  const catalogUrl = `http://localhost:5174/catalog/${vendor.catalogId}`
+  const catalogUrl = `https://whatsapp-buyer-frontend.vercel.app/catalog/${vendor.catalogId}`
 
   const copyLink = () => {
     navigator.clipboard.writeText(catalogUrl)
