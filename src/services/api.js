@@ -43,4 +43,15 @@ export const automationAPI = {
   generateProductCard: (productId) => api.post(`/automation/generate-card/${productId}`)
 };
 
+export const ordersAPI = {
+  getRecentOrders: () => api.get('/orders/recent'),
+  getAllOrders: () => api.get('/orders'),
+  updateStatus: (orderId, status) => api.put(`/orders/${orderId}/status`, { status }),
+  getOrderDetails: (orderId) => api.get(`/orders/${orderId}`)
+};
+
+export const dashboardAPI = {
+  getStats: () => api.get('/dashboard/stats')
+};
+
 export default api;

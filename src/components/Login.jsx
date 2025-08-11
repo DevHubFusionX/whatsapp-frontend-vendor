@@ -4,15 +4,17 @@ import { useAuth } from '../App'
 import RegisterForm from './auth/RegisterForm'
 import LoginForm from './auth/LoginForm'
 import EmailOtpInput from './auth/EmailOtpInput'
+import CompleteProfile from './CompleteProfile'
 import Card from './ui/Card'
 import { authAPI } from '../services/api'
 
 const Login = () => {
-  const [mode, setMode] = useState('register') // 'login', 'register', 'verify'
+  const [mode, setMode] = useState('register') // 'login', 'register', 'verify', 'complete-profile'
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [resendLoading, setResendLoading] = useState(false)
   const [error, setError] = useState('')
+  const [newVendor, setNewVendor] = useState(null)
   const { login } = useAuth()
 
   const handleRegister = async (formData) => {
@@ -52,7 +54,14 @@ const Login = () => {
     try {
       const response = await authAPI.verifyOTP(email, otp)
       localStorage.setItem('token', response.data.token)
-      login(response.data.vendor)
+      setNewVendor(response.data.vendor)
+      
+      // Check if profile is complete
+      if (!response.data.vendor.about && !response.data.vendor.logo) {
+        setMode('complete-profile')
+      } else {
+        login(response.data.vendor)
+      }
     } catch (error) {
       setError(error.response?.data?.message || 'Verification failed')
     }
@@ -132,6 +141,12 @@ const Login = () => {
               onBack={() => setMode('register')}
               loading={loading}
               resendLoading={resendLoading}
+            />
+          )}
+
+          {mode === 'complete-profile' && (
+            <CompleteProfile
+              onComplete={() => login(newVendor)}
             />
           )}
         </Card>

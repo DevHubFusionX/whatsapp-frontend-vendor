@@ -13,6 +13,8 @@ import CatalogHome from './components/buyer/CatalogHome'
 import ProductDetail from './components/buyer/ProductDetail'
 import VendorProfile from './components/buyer/VendorProfile'
 import SearchPage from './components/buyer/SearchPage'
+// Vendor Components
+import VendorProductList from './components/vendor/VendorProductList'
 
 const AuthContext = createContext()
 
@@ -113,6 +115,10 @@ function App() {
             <Route 
               path="/settings" 
               element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/vendor/products" 
+              element={isAuthenticated ? <VendorProductList /> : <Navigate to="/login" />} 
             />
             <Route 
               path="/old-catalog/:vendorId" 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { Filter, X } from 'lucide-react'
+import { vendorsAPI } from '../../services/api'
 import SearchBar from './search/SearchBar'
 import ProductGrid from './catalog/ProductGrid'
 import BottomNav from './catalog/BottomNav'
@@ -19,31 +20,28 @@ const SearchPage = () => {
   })
 
   useEffect(() => {
-    setTimeout(() => {
-      setVendor({
-        id: vendorId,
-        businessName: 'Fresh Market Store',
-        phoneNumber: '+1234567890'
-      })
-      
-      setProducts([
-        { id: 1, name: 'Premium Coffee Beans', price: '24.99', category: 'beverages' },
-        { id: 2, name: 'Organic Tea Set', price: '18.50', category: 'beverages' },
-        { id: 3, name: 'Artisan Chocolate', price: '12.99', category: 'snacks' },
-        { id: 4, name: 'Fresh Honey', price: '15.99', category: 'food' },
-        { id: 5, name: 'Herbal Soap', price: '8.99', category: 'personal-care' },
-        { id: 6, name: 'Green Smoothie Mix', price: '22.50', category: 'beverages' }
-      ])
-    }, 500)
+    fetchVendorData()
   }, [vendorId])
+
+  const fetchVendorData = async () => {
+    try {
+      if (vendorId) {
+        const response = await vendorsAPI.getVendorCatalog(vendorId)
+        setVendor(response.data.vendor)
+        setProducts(response.data.products || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch vendor data:', error)
+    }
+  }
 
   const categories = ['beverages', 'snacks', 'food', 'personal-care']
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = !filters.category || product.category === filters.category
-    const matchesPrice = (!filters.minPrice || parseFloat(product.price) >= parseFloat(filters.minPrice)) &&
-                         (!filters.maxPrice || parseFloat(product.price) <= parseFloat(filters.maxPrice))
+    const matchesPrice = (!filters.minPrice || product.price >= parseFloat(filters.minPrice)) &&
+                         (!filters.maxPrice || product.price <= parseFloat(filters.maxPrice))
     
     return matchesSearch && matchesCategory && matchesPrice
   })

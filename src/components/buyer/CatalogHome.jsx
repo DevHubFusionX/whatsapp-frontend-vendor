@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { Grid, List, Package } from 'lucide-react'
+import { Grid, List, Package, ArrowLeft } from 'lucide-react'
+import { vendorsAPI } from '../../services/api'
 import ProductGrid from './catalog/ProductGrid'
 import ProductList from './catalog/ProductList'
 import BottomNav from './catalog/BottomNav'
@@ -15,25 +16,20 @@ const CatalogHome = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setTimeout(() => {
-      setVendor({
-        id: vendorId,
-        businessName: 'Fresh Market Store',
-        name: 'John Doe',
-        phoneNumber: '+1234567890'
-      })
-      
-      setProducts([
-        { id: 1, name: 'Premium Coffee Beans', price: '24.99', image: null, category: 'beverages' },
-        { id: 2, name: 'Organic Tea Set', price: '18.50', image: null, category: 'beverages' },
-        { id: 3, name: 'Artisan Chocolate', price: '12.99', image: null, category: 'snacks' },
-        { id: 4, name: 'Fresh Honey', price: '15.99', image: null, category: 'food' },
-        { id: 5, name: 'Herbal Soap', price: '8.99', image: null, category: 'personal-care' },
-        { id: 6, name: 'Green Smoothie Mix', price: '22.50', image: null, category: 'beverages' }
-      ])
-      setLoading(false)
-    }, 800)
+    fetchVendorData()
   }, [vendorId])
+
+  const fetchVendorData = async () => {
+    try {
+      const response = await vendorsAPI.getVendorCatalog(vendorId)
+      setVendor(response.data.vendor)
+      setProducts(response.data.products || [])
+    } catch (error) {
+      console.error('Failed to fetch vendor data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -42,7 +38,7 @@ const CatalogHome = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-[#25D366] border-t-transparent rounded-full animate-spin"></div>
       </div>
     )
   }
@@ -52,12 +48,15 @@ const CatalogHome = () => {
       {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="p-4">
-          <h1 className="text-xl font-bold text-gray-800 mb-3">{vendor?.businessName}</h1>
+          <h1 className="text-xl font-bold text-gray-900 mb-3">{vendor?.businessName}</h1>
           <SearchBar value={searchQuery} onChange={setSearchQuery} />
         </div>
         
         {/* View Toggle */}
-        <div className="px-4 pb-3 flex justify-end">
+        <div className="px-4 pb-3 flex justify-between items-center">
+          <p className="text-sm text-gray-600">
+            {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+          </p>
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('grid')}
@@ -85,6 +84,7 @@ const CatalogHome = () => {
           <div className="text-center py-16">
             <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">No products found</p>
+            <p className="text-sm text-gray-400 mt-2">Try adjusting your search terms</p>
           </div>
         ) : viewMode === 'grid' ? (
           <ProductGrid products={filteredProducts} vendor={vendor} />
