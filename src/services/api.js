@@ -45,13 +45,15 @@ export const automationAPI = {
 
 export const ordersAPI = {
   getRecentOrders: () => api.get('/orders/recent'),
-  getAllOrders: () => api.get('/orders'),
-  updateStatus: (orderId, status) => api.put(`/orders/${orderId}/status`, { status }),
+  getOrders: () => api.get('/orders'),
+  updateOrderStatus: (orderId, status) => api.put(`/orders/${orderId}/status`, { status }),
   getOrderDetails: (orderId) => api.get(`/orders/${orderId}`)
 };
 
 export const dashboardAPI = {
-  getStats: () => api.get('/dashboard/stats')
+  getStats: () => api.get('/dashboard/stats'),
+  getAnalytics: (period = '7d') => api.get(`/dashboard/analytics?period=${period}`),
+  getAlerts: () => api.get('/dashboard/alerts')
 };
 
 export default api;

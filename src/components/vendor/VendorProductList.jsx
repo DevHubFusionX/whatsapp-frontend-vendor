@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Plus, Search, Edit, Trash2, Package } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { productsAPI } from '../../services/api'
 import ProductCard from '../catalog/ProductCard'
 
 const VendorProductList = () => {
+  const navigate = useNavigate()
   const [products, setProducts] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
@@ -28,7 +30,7 @@ const VendorProductList = () => {
   )
 
   const handleEdit = (productId) => {
-    console.log('Edit product:', productId)
+    navigate(`/edit-product/${productId}`)
   }
 
   const handleDelete = async (productId) => {
@@ -57,7 +59,10 @@ const VendorProductList = () => {
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-bold text-gray-900">My Products</h1>
-            <button className="bg-[#25D366] hover:bg-[#20BA5A] text-white font-medium py-2 px-4 rounded-lg flex items-center space-x-2">
+            <button 
+              onClick={() => navigate('/add-product')}
+              className="bg-[#25D366] hover:bg-[#20BA5A] text-white font-medium py-2 px-4 rounded-lg flex items-center space-x-2"
+            >
               <Plus className="w-4 h-4" />
               <span>Add Product</span>
             </button>

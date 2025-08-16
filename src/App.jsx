@@ -8,6 +8,9 @@ import EditProduct from './components/product/EditProduct'
 import AutomationDashboard from './components/AutomationDashboard'
 import CatalogPage from './components/CatalogPage'
 import Settings from './components/Settings'
+import Analytics from './components/Analytics'
+import OrdersPage from './components/OrdersPage'
+import InventoryManagement from './components/InventoryManagement'
 // Buyer Components
 import CatalogHome from './components/buyer/CatalogHome'
 import ProductDetail from './components/buyer/ProductDetail'
@@ -95,6 +98,18 @@ function App() {
             <Route 
               path="/automation" 
               element={isAuthenticated ? <AutomationDashboard /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/analytics" 
+              element={isAuthenticated ? <Analytics /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/orders" 
+              element={isAuthenticated ? <OrdersPage /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/inventory" 
+              element={isAuthenticated ? <InventoryManagement /> : <Navigate to="/login" />} 
             />
             <Route 
               path="/catalog/:vendorId" 

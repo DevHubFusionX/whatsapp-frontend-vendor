@@ -1,4 +1,4 @@
-import ProductCard from '../../catalog/ProductCard'
+import BuyerProductCard from '../BuyerProductCard'
 
 const ProductGrid = ({ products, vendor }) => {
   const handleProductMessage = (product) => {
@@ -12,8 +12,8 @@ const ProductGrid = ({ products, vendor }) => {
   return (
     <div className="grid grid-cols-2 gap-3">
       {products.map((product) => (
-        <ProductCard 
-          key={product.id} 
+        <BuyerProductCard 
+          key={product.id || product._id} 
           product={product} 
           onMessage={handleProductMessage} 
         />

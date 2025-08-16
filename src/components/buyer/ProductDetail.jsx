@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, MessageCircle, Package, Store, MapPin, Star } from 'lucide-react'
 import { productsAPI, vendorsAPI } from '../../services/api'
-import ProductCard from '../catalog/ProductCard'
+import BuyerProductCard from './BuyerProductCard'
 
 const ProductDetail = () => {
   const { productId } = useParams()
@@ -165,7 +165,7 @@ const ProductDetail = () => {
             <h3 className="text-lg font-bold text-gray-900 mb-4">Related Products</h3>
             <div className="grid grid-cols-2 gap-4">
               {relatedProducts.slice(0, 4).map((relatedProduct) => (
-                <ProductCard 
+                <BuyerProductCard 
                   key={relatedProduct.id} 
                   product={relatedProduct} 
                   onMessage={handleRelatedProductMessage} 

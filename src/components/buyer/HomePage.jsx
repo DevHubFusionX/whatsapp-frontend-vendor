@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Search, MapPin, ChevronDown, Shirt, Utensils, Smartphone, Package } from 'lucide-react'
 import { productsAPI } from '../../services/api'
-import ProductCard from '../catalog/ProductCard'
+import BuyerProductCard from './BuyerProductCard'
 
 const HomePage = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -132,7 +132,7 @@ const HomePage = () => {
         <div className="horizontal-scroll flex space-x-4 overflow-x-auto pb-2">
           {featuredProducts.map((product) => (
             <div key={product.id} className="flex-shrink-0 w-48">
-              <ProductCard product={product} onMessage={handleProductMessage} />
+              <BuyerProductCard product={product} onMessage={handleProductMessage} />
             </div>
           ))}
         </div>
@@ -143,7 +143,7 @@ const HomePage = () => {
         <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Products</h2>
         <div className="grid grid-cols-2 gap-3">
           {featuredProducts.slice(0, 4).map((product) => (
-            <ProductCard key={product.id} product={product} onMessage={handleProductMessage} />
+            <BuyerProductCard key={product.id} product={product} onMessage={handleProductMessage} />
           ))}
         </div>
       </div>
