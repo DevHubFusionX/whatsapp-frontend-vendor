@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Plus, Package, Users, Eye, Share2, Settings } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../App'
 import Header from './ui/Header'
 import { productsAPI } from '../services/api'
 
 const Dashboard = () => {
   const { vendor } = useAuth()
+  const navigate = useNavigate()
   const [stats, setStats] = useState({
     totalProducts: 0,
     buyersContacted: 0
@@ -16,6 +17,12 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        const token = localStorage.getItem('token')
+        if (!token) {
+          window.location.href = '/login'
+          return
+        }
+        
         const [productsRes] = await Promise.all([
           productsAPI.getProducts()
         ])
@@ -27,6 +34,9 @@ const Dashboard = () => {
         
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
+        if (error.response?.status === 401) {
+          window.location.href = '/login'
+        }
       }
       setLoading(false)
     }

@@ -16,10 +16,18 @@ const VendorProductList = () => {
 
   const fetchProducts = async () => {
     try {
+      const token = localStorage.getItem('token')
+      if (!token) {
+        navigate('/login')
+        return
+      }
       const response = await productsAPI.getProducts()
       setProducts(response.data)
     } catch (error) {
       console.error('Failed to fetch products:', error)
+      if (error.response?.status === 401) {
+        navigate('/login')
+      }
     } finally {
       setLoading(false)
     }
