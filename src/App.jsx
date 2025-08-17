@@ -9,6 +9,7 @@ import CatalogPage from './components/CatalogPage'
 import Settings from './components/Settings'
 import VendorProductList from './components/vendor/VendorProductList'
 import BuyerInteractions from './components/BuyerInteractions'
+import TestAuth from './components/TestAuth'
 
 const AuthContext = createContext()
 
@@ -106,6 +107,10 @@ function App() {
             <Route 
               path="/catalog/:vendorId" 
               element={<CatalogPage />} 
+            />
+            <Route 
+              path="/test-auth" 
+              element={<TestAuth />} 
             />
             <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
           </Routes>

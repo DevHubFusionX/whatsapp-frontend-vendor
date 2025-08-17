@@ -17,12 +17,6 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const token = localStorage.getItem('token')
-        if (!token) {
-          window.location.href = '/login'
-          return
-        }
-        
         const [productsRes] = await Promise.all([
           productsAPI.getProducts()
         ])
@@ -34,9 +28,6 @@ const Dashboard = () => {
         
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error)
-        if (error.response?.status === 401) {
-          window.location.href = '/login'
-        }
       }
       setLoading(false)
     }

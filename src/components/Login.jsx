@@ -3,14 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, Store, User, Building, Phone } from 'lucide-react'
 import { useAuth } from '../App'
 import { authAPI } from '../services/api'
+import EmailVerification from './EmailVerification'
 
 const Login = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const [isLogin, setIsLogin] = useState(true)
+  const [mode, setMode] = useState('login') // 'login', 'signup', 'verify'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -24,36 +26,63 @@ const Login = () => {
     if (error) setError('')
   }
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
     
     try {
-      if (isLogin) {
-        const response = await authAPI.login({
-          email: formData.email,
-          password: formData.password
-        })
-        localStorage.setItem('token', response.data.token)
-        login(response.data.vendor)
-        navigate('/dashboard')
-      } else {
-        const response = await authAPI.register({
-          businessName: formData.businessName,
-          ownerName: formData.ownerName,
-          email: formData.email,
-          password: formData.password,
-          phoneNumber: formData.phoneNumber
-        })
+      const response = await authAPI.login({
+        email: formData.email,
+        password: formData.password
+      })
+      
+      if (response.data.token) {
         localStorage.setItem('token', response.data.token)
         login(response.data.vendor)
         navigate('/dashboard')
       }
     } catch (error) {
-      setError(error.response?.data?.message || `${isLogin ? 'Login' : 'Registration'} failed`)
+      if (error.response?.data?.message === 'Please verify your email first') {
+        setEmail(formData.email)
+        setMode('verify')
+      } else {
+        setError(error.response?.data?.message || 'Login failed')
+      }
     }
     setLoading(false)
+  }
+
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    
+    try {
+      await authAPI.register({
+        businessName: formData.businessName,
+        ownerName: formData.ownerName,
+        email: formData.email,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber
+      })
+      
+      setEmail(formData.email)
+      setMode('verify')
+    } catch (error) {
+      setError(error.response?.data?.message || 'Registration failed')
+    }
+    setLoading(false)
+  }
+
+  const handleVerificationSuccess = (vendorData, token) => {
+    localStorage.setItem('token', token)
+    login(vendorData)
+    navigate('/dashboard')
+  }
+
+  if (mode === 'verify') {
+    return <EmailVerification email={email} onSuccess={handleVerificationSuccess} onBack={() => setMode('signup')} />
   }
 
   return (
@@ -64,27 +93,25 @@ const Login = () => {
             <Store className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            {isLogin ? 'Welcome Back' : 'Create Your Store'}
+            {mode === 'login' ? 'Welcome Back' : 'Create Your Store'}
           </h1>
           <p className="text-gray-600">
-            {isLogin ? 'Sign in to manage your business' : 'Start selling online in minutes'}
+            {mode === 'login' ? 'Sign in to manage your business' : 'Start selling online in minutes'}
           </p>
         </div>
 
         <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={mode === 'login' ? handleLogin : handleSignup} className="space-y-6">
             {error && (
               <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm border border-red-200">
                 {error}
               </div>
             )}
 
-            {!isLogin && (
+            {mode === 'signup' && (
               <>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Building className="w-5 h-5 text-gray-400" />
-                  </div>
+                  <Building className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     name="businessName"
@@ -97,9 +124,7 @@ const Login = () => {
                 </div>
 
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User className="w-5 h-5 text-gray-400" />
-                  </div>
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     name="ownerName"
@@ -114,9 +139,7 @@ const Login = () => {
             )}
 
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail className="w-5 h-5 text-gray-400" />
-              </div>
+              <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="email"
                 name="email"
@@ -129,9 +152,7 @@ const Login = () => {
             </div>
 
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock className="w-5 h-5 text-gray-400" />
-              </div>
+              <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
@@ -154,11 +175,9 @@ const Login = () => {
               </button>
             </div>
 
-            {!isLogin && (
+            {mode === 'signup' && (
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Phone className="w-5 h-5 text-gray-400" />
-                </div>
+                <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="tel"
                   name="phoneNumber"
@@ -179,22 +198,22 @@ const Login = () => {
               {loading ? (
                 <div className="flex items-center justify-center space-x-2">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  <span>{isLogin ? 'Signing In...' : 'Creating Store...'}</span>
+                  <span>{mode === 'login' ? 'Signing In...' : 'Creating Store...'}</span>
                 </div>
               ) : (
-                isLogin ? 'Sign In' : 'Create My Store'
+                mode === 'login' ? 'Sign In' : 'Create My Store'
               )}
             </button>
           </form>
 
           <div className="text-center mt-6 pt-6 border-t border-gray-200">
             <p className="text-gray-600">
-              {isLogin ? "Don't have a store?" : "Already have a store?"}{' '}
+              {mode === 'login' ? "Don't have a store?" : "Already have a store?"}{' '}
               <button
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
                 className="text-green-600 font-semibold hover:text-green-700"
               >
-                {isLogin ? 'Create Account' : 'Sign In'}
+                {mode === 'login' ? 'Create Account' : 'Sign In'}
               </button>
             </p>
           </div>
