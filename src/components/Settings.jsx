@@ -8,9 +8,10 @@ const Settings = () => {
   const { vendor, setVendor } = useAuth()
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
-    name: vendor?.name || '',
+    ownerName: vendor?.ownerName || vendor?.name || '',
     businessName: vendor?.businessName || '',
     phoneNumber: vendor?.phoneNumber || '',
+    about: vendor?.about || '',
     logo: vendor?.logo || null
   })
   const [logoPreview, setLogoPreview] = useState(vendor?.logo || null)
@@ -74,7 +75,7 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Modern Header */}
+      {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center space-x-4">
@@ -89,8 +90,8 @@ const Settings = () => {
                 <SettingsIcon className="w-5 h-5 text-teal-600" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-                <p className="text-sm text-gray-500">Manage your profile and business information</p>
+                <h1 className="text-2xl font-bold text-gray-900">Vendor Profile</h1>
+                <p className="text-sm text-gray-500">Manage your business information</p>
               </div>
             </div>
           </div>
@@ -165,30 +166,11 @@ const Settings = () => {
           {/* Profile Information Section */}
           <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-2">Profile Information</h2>
-              <p className="text-sm text-gray-500">Update your personal and business details</p>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Business Information</h2>
+              <p className="text-sm text-gray-500">Update your business details</p>
             </div>
             
             <div className="space-y-6">
-              {/* Your Name */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Your Name *
-                </label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter your full name"
-                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
-                    required
-                  />
-                </div>
-              </div>
-
               {/* Business Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -208,10 +190,29 @@ const Settings = () => {
                 </div>
               </div>
 
+              {/* Owner Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Owner's Full Name *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="ownerName"
+                    value={formData.ownerName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                    required
+                  />
+                </div>
+              </div>
+
               {/* Phone Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Phone Number *
+                  Phone Number (WhatsApp) *
                 </label>
                 <div className="relative">
                   <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -220,11 +221,26 @@ const Settings = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    placeholder="+1 (555) 123-4567"
+                    placeholder="+234 801 234 5678"
                     className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
                     required
                   />
                 </div>
+              </div>
+
+              {/* About Business */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  About Your Business
+                </label>
+                <textarea
+                  name="about"
+                  value={formData.about}
+                  onChange={handleInputChange}
+                  placeholder="Tell customers about your business..."
+                  rows={4}
+                  className="w-full px-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400 resize-none"
+                />
               </div>
             </div>
           </div>
@@ -234,7 +250,7 @@ const Settings = () => {
             <div className="mb-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center space-x-2">
                 <Link2 className="w-5 h-5 text-teal-600" />
-                <span>Your Store Link</span>
+                <span>Your Catalog Link</span>
               </h2>
               <p className="text-sm text-gray-500">Share this link with customers to showcase your products</p>
             </div>
@@ -272,7 +288,7 @@ const Settings = () => {
             </button>
             <button
               type="submit"
-              disabled={loading || !formData.name || !formData.businessName || !formData.phoneNumber}
+              disabled={loading || !formData.ownerName || !formData.businessName || !formData.phoneNumber}
               className="flex-1 py-4 px-6 bg-teal-600 text-white rounded-2xl hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center justify-center space-x-2"
             >
               {loading ? (

@@ -1,155 +1,204 @@
 import { useState } from 'react'
-import { MessageCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Mail, Lock, Eye, EyeOff, Store, User, Building, Phone } from 'lucide-react'
 import { useAuth } from '../App'
-import RegisterForm from './auth/RegisterForm'
-import LoginForm from './auth/LoginForm'
-import EmailOtpInput from './auth/EmailOtpInput'
-import CompleteProfile from './CompleteProfile'
-import Card from './ui/Card'
 import { authAPI } from '../services/api'
 
 const Login = () => {
-  const [mode, setMode] = useState('register') // 'login', 'register', 'verify', 'complete-profile'
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [resendLoading, setResendLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [newVendor, setNewVendor] = useState(null)
   const { login } = useAuth()
+  const navigate = useNavigate()
+  const [isLogin, setIsLogin] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    businessName: '',
+    ownerName: '',
+    phoneNumber: ''
+  })
 
-  const handleRegister = async (formData) => {
-    setLoading(true)
-    setError('')
-    try {
-      const response = await authAPI.register(formData)
-      setEmail(formData.email)
-      setMode('verify')
-    } catch (error) {
-      console.log('Registration error:', error.response?.data)
-      if (error.response?.data?.errors) {
-        setError(error.response.data.errors.map(e => e.msg).join(', '))
-      } else {
-        setError(error.response?.data?.message || 'Registration failed')
-      }
-    }
-    setLoading(false)
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+    if (error) setError('')
   }
 
-  const handleLogin = async (formData) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault()
     setLoading(true)
     setError('')
+    
     try {
-      const response = await authAPI.login(formData)
-      localStorage.setItem('token', response.data.token)
-      login(response.data.vendor)
-    } catch (error) {
-      setError(error.response?.data?.message || 'Login failed')
-    }
-    setLoading(false)
-  }
-
-  const handleVerifyOtp = async (otp) => {
-    setLoading(true)
-    setError('')
-    try {
-      const response = await authAPI.verifyOTP(email, otp)
-      localStorage.setItem('token', response.data.token)
-      setNewVendor(response.data.vendor)
-      
-      // Check if profile is complete
-      if (!response.data.vendor.about && !response.data.vendor.logo) {
-        setMode('complete-profile')
-      } else {
+      if (isLogin) {
+        const response = await authAPI.login({
+          email: formData.email,
+          password: formData.password
+        })
+        localStorage.setItem('token', response.data.token)
         login(response.data.vendor)
+        navigate('/dashboard')
+      } else {
+        const response = await authAPI.register({
+          businessName: formData.businessName,
+          ownerName: formData.ownerName,
+          email: formData.email,
+          password: formData.password,
+          phoneNumber: formData.phoneNumber
+        })
+        localStorage.setItem('token', response.data.token)
+        login(response.data.vendor)
+        navigate('/dashboard')
       }
     } catch (error) {
-      setError(error.response?.data?.message || 'Verification failed')
+      setError(error.response?.data?.message || `${isLogin ? 'Login' : 'Registration'} failed`)
     }
     setLoading(false)
-  }
-
-  const handleResendOtp = async () => {
-    setResendLoading(true)
-    setError('')
-    try {
-      await authAPI.resendOTP(email)
-    } catch (error) {
-      setError(error.response?.data?.message || 'Failed to resend code')
-    }
-    setResendLoading(false)
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <MessageCircle className="w-8 h-8 text-white" />
+          <div className="w-20 h-20 bg-gradient-to-r from-green-500 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <Store className="w-10 h-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">VendorTool</h1>
-          <p className="text-gray-600">WhatsApp Catalog for Nigerian Businesses</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+            {isLogin ? 'Welcome Back' : 'Create Your Store'}
+          </h1>
+          <p className="text-gray-600">
+            {isLogin ? 'Sign in to manage your business' : 'Start selling online in minutes'}
+          </p>
         </div>
 
-        <Card className="p-8">
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-              {error}
+        <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div className="bg-red-50 text-red-600 p-4 rounded-2xl text-sm border border-red-200">
+                {error}
+              </div>
+            )}
+
+            {!isLogin && (
+              <>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <Building className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="businessName"
+                    placeholder="Business Name"
+                    value={formData.businessName}
+                    onChange={handleChange}
+                    className="w-full pl-12 pr-4 py-4 border rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors border-gray-200 bg-gray-50 hover:bg-white"
+                    required
+                  />
+                </div>
+
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <User className="w-5 h-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    name="ownerName"
+                    placeholder="Owner's Full Name"
+                    value={formData.ownerName}
+                    onChange={handleChange}
+                    className="w-full pl-12 pr-4 py-4 border rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors border-gray-200 bg-gray-50 hover:bg-white"
+                    required
+                  />
+                </div>
+              </>
+            )}
+
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Mail className="w-5 h-5 text-gray-400" />
+              </div>
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full pl-12 pr-4 py-4 border rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors border-gray-200 bg-gray-50 hover:bg-white"
+                required
+              />
             </div>
-          )}
 
-          {mode === 'login' && (
-            <>
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">Welcome Back</h2>
-                <p className="text-gray-600">Sign in to your vendor account</p>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <Lock className="w-5 h-5 text-gray-400" />
               </div>
-              <LoginForm onSubmit={handleLogin} loading={loading} />
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => setMode('register')}
-                  className="text-green-600 hover:text-green-700 font-medium"
-                >
-                  Don't have an account? Register here
-                </button>
-              </div>
-            </>
-          )}
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full pl-12 pr-12 py-4 border rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors border-gray-200 bg-gray-50 hover:bg-white"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                ) : (
+                  <Eye className="w-5 h-5 text-gray-400 hover:text-gray-600" />
+                )}
+              </button>
+            </div>
 
-          {mode === 'register' && (
-            <>
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">Create Account</h2>
-                <p className="text-gray-600">Start selling with WhatsApp</p>
+            {!isLogin && (
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Phone className="w-5 h-5 text-gray-400" />
+                </div>
+                <input
+                  type="tel"
+                  name="phoneNumber"
+                  placeholder="Phone Number (WhatsApp)"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="w-full pl-12 pr-4 py-4 border rounded-2xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors border-gray-200 bg-gray-50 hover:bg-white"
+                  required
+                />
               </div>
-              <RegisterForm onSubmit={handleRegister} loading={loading} />
-              <div className="mt-6 text-center">
-                <button
-                  onClick={() => setMode('login')}
-                  className="text-green-600 hover:text-green-700 font-medium"
-                >
-                  Already have an account? Sign in
-                </button>
-              </div>
-            </>
-          )}
+            )}
 
-          {mode === 'verify' && (
-            <EmailOtpInput
-              email={email}
-              onSubmit={handleVerifyOtp}
-              onResend={handleResendOtp}
-              onBack={() => setMode('register')}
-              loading={loading}
-              resendLoading={resendLoading}
-            />
-          )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-2xl font-bold hover:from-green-600 hover:to-green-700 transition-all duration-300 disabled:opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>{isLogin ? 'Signing In...' : 'Creating Store...'}</span>
+                </div>
+              ) : (
+                isLogin ? 'Sign In' : 'Create My Store'
+              )}
+            </button>
+          </form>
 
-          {mode === 'complete-profile' && (
-            <CompleteProfile
-              onComplete={() => login(newVendor)}
-            />
-          )}
-        </Card>
+          <div className="text-center mt-6 pt-6 border-t border-gray-200">
+            <p className="text-gray-600">
+              {isLogin ? "Don't have a store?" : "Already have a store?"}{' '}
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-green-600 font-semibold hover:text-green-700"
+              >
+                {isLogin ? 'Create Account' : 'Sign In'}
+              </button>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   )

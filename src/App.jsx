@@ -5,13 +5,10 @@ import Login from './components/Login'
 import Dashboard from './components/Dashboard'
 import AddProduct from './components/AddProduct'
 import EditProduct from './components/product/EditProduct'
-import AutomationDashboard from './components/AutomationDashboard'
 import CatalogPage from './components/CatalogPage'
 import Settings from './components/Settings'
-import Analytics from './components/Analytics'
-import OrdersPage from './components/OrdersPage'
-import InventoryManagement from './components/InventoryManagement'
 import VendorProductList from './components/vendor/VendorProductList'
+import BuyerInteractions from './components/BuyerInteractions'
 
 const AuthContext = createContext()
 
@@ -89,30 +86,22 @@ function App() {
               path="/edit-product/:id" 
               element={isAuthenticated ? <EditProduct /> : <Navigate to="/login" />} 
             />
-            <Route 
-              path="/automation" 
-              element={isAuthenticated ? <AutomationDashboard /> : <Navigate to="/login" />} 
-            />
-            <Route 
-              path="/analytics" 
-              element={isAuthenticated ? <Analytics /> : <Navigate to="/login" />} 
-            />
-            <Route 
-              path="/orders" 
-              element={isAuthenticated ? <OrdersPage /> : <Navigate to="/login" />} 
-            />
-            <Route 
-              path="/inventory" 
-              element={isAuthenticated ? <InventoryManagement /> : <Navigate to="/login" />} 
-            />
 
             <Route 
-              path="/settings" 
+              path="/products" 
+              element={isAuthenticated ? <VendorProductList /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/buyers" 
+              element={isAuthenticated ? <BuyerInteractions /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/profile" 
               element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} 
             />
             <Route 
-              path="/vendor/products" 
-              element={isAuthenticated ? <VendorProductList /> : <Navigate to="/login" />} 
+              path="/settings" 
+              element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} 
             />
             <Route 
               path="/catalog/:vendorId" 

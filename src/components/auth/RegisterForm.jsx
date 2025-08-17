@@ -4,10 +4,10 @@ import Button from '../ui/Button'
 
 const RegisterForm = ({ onSubmit, loading }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    businessName: '',
+    ownerName: '',
     email: '',
     phoneNumber: '',
-    businessName: '',
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
@@ -27,7 +27,7 @@ const RegisterForm = ({ onSubmit, loading }) => {
 
   const getFieldValidation = (field, value) => {
     switch (field) {
-      case 'name':
+      case 'ownerName':
         return value.length > 1
       case 'email':
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
@@ -180,8 +180,8 @@ const RegisterForm = ({ onSubmit, loading }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <InputField
-            label="Full Name"
-            name="name"
+            label="Owner's Full Name"
+            name="ownerName"
             icon={User}
             placeholder="Enter your full name"
             hint="This will be displayed on your store"
