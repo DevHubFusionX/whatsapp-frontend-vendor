@@ -11,12 +11,6 @@ import Settings from './components/Settings'
 import Analytics from './components/Analytics'
 import OrdersPage from './components/OrdersPage'
 import InventoryManagement from './components/InventoryManagement'
-// Buyer Components
-import CatalogHome from './components/buyer/CatalogHome'
-import ProductDetail from './components/buyer/ProductDetail'
-import VendorProfile from './components/buyer/VendorProfile'
-import SearchPage from './components/buyer/SearchPage'
-// Vendor Components
 import VendorProductList from './components/vendor/VendorProductList'
 
 const AuthContext = createContext()
@@ -111,22 +105,7 @@ function App() {
               path="/inventory" 
               element={isAuthenticated ? <InventoryManagement /> : <Navigate to="/login" />} 
             />
-            <Route 
-              path="/catalog/:vendorId" 
-              element={<CatalogHome />} 
-            />
-            <Route 
-              path="/product/:productId" 
-              element={<ProductDetail />} 
-            />
-            <Route 
-              path="/vendor/:vendorId" 
-              element={<VendorProfile />} 
-            />
-            <Route 
-              path="/search/:vendorId" 
-              element={<SearchPage />} 
-            />
+
             <Route 
               path="/settings" 
               element={isAuthenticated ? <Settings /> : <Navigate to="/login" />} 
@@ -136,10 +115,10 @@ function App() {
               element={isAuthenticated ? <VendorProductList /> : <Navigate to="/login" />} 
             />
             <Route 
-              path="/old-catalog/:vendorId" 
+              path="/catalog/:vendorId" 
               element={<CatalogPage />} 
             />
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
           </Routes>
         </div>
       </Router>

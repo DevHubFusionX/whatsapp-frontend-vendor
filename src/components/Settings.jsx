@@ -1,14 +1,12 @@
 import { useState } from 'react'
-import { Upload, User, Building, Phone, Copy, Check } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { ArrowLeft, Upload, User, Building, Phone, Copy, Check, X, Settings as SettingsIcon, Link2, Save } from 'lucide-react'
 import { useAuth } from '../App'
-import Header from './ui/Header'
-import Button from './ui/Button'
-import Input from './ui/Input'
-import Card from './ui/Card'
 import { vendorsAPI } from '../services/api'
 
 const Settings = () => {
   const { vendor, setVendor } = useAuth()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: vendor?.name || '',
     businessName: vendor?.businessName || '',
@@ -68,28 +66,49 @@ const Settings = () => {
   }
 
   const copyLink = () => {
-    const link = `${window.location.origin}/catalog/${vendor?.id}`
+    const link = `${window.location.origin}/catalog/${vendor?.catalogId}`
     navigator.clipboard.writeText(link)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header
-        title="Settings"
-        backTo="/dashboard"
-      />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Modern Header */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => navigate('/dashboard')}
+              className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-600" />
+            </button>
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-teal-100 rounded-full flex items-center justify-center">
+                <SettingsIcon className="w-5 h-5 text-teal-600" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+                <p className="text-sm text-gray-500">Manage your profile and business information</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="p-4 max-w-2xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Logo Upload */}
-          <Card>
-            <label className="block text-sm font-medium text-gray-700 mb-4">
-              Business Logo
-            </label>
-            <div className="flex items-center space-x-6">
-              <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center overflow-hidden">
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Business Logo Section */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Business Logo</h2>
+              <p className="text-sm text-gray-500">Upload your business logo to personalize your store</p>
+            </div>
+            
+            <div className="flex items-center space-x-8">
+              <div className="w-32 h-32 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center overflow-hidden border-2 border-gray-200">
                 {logoPreview ? (
                   <img
                     src={logoPreview}
@@ -97,17 +116,17 @@ const Settings = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Building className="w-10 h-10 text-gray-400" />
+                  <Building className="w-12 h-12 text-gray-400" />
                 )}
               </div>
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 space-y-4">
                 {logoPreview ? (
-                  <div className="flex space-x-2">
-                    <label>
-                      <Button variant="secondary" size="sm">
+                  <div className="flex space-x-3">
+                    <label className="cursor-pointer">
+                      <div className="px-4 py-2 bg-teal-100 text-teal-700 rounded-xl hover:bg-teal-200 transition-colors flex items-center space-x-2 text-sm font-medium">
                         <Upload className="w-4 h-4" />
-                        Change Logo
-                      </Button>
+                        <span>Change Logo</span>
+                      </div>
                       <input
                         type="file"
                         className="hidden"
@@ -115,21 +134,21 @@ const Settings = () => {
                         onChange={handleLogoChange}
                       />
                     </label>
-                    <Button
+                    <button
                       type="button"
-                      variant="danger"
-                      size="sm"
                       onClick={removeLogo}
+                      className="px-4 py-2 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors flex items-center space-x-2 text-sm font-medium"
                     >
-                      Remove
-                    </Button>
+                      <X className="w-4 h-4" />
+                      <span>Remove</span>
+                    </button>
                   </div>
                 ) : (
-                  <label>
-                    <Button variant="outline" size="sm">
-                      <Upload className="w-4 h-4" />
-                      Upload Logo
-                    </Button>
+                  <label className="cursor-pointer">
+                    <div className="px-6 py-3 border-2 border-dashed border-gray-300 rounded-xl hover:border-teal-400 hover:bg-teal-50 transition-all flex items-center space-x-3 text-gray-600 hover:text-teal-600">
+                      <Upload className="w-5 h-5" />
+                      <span className="font-medium">Upload Business Logo</span>
+                    </div>
                     <input
                       type="file"
                       className="hidden"
@@ -138,78 +157,137 @@ const Settings = () => {
                     />
                   </label>
                 )}
+                <p className="text-xs text-gray-500">Recommended: Square image, at least 200x200px</p>
               </div>
             </div>
-          </Card>
+          </div>
 
-          {/* Profile Information */}
-          <Card className="space-y-6">
-            <h2 className="text-lg font-semibold text-gray-800">Profile Information</h2>
+          {/* Profile Information Section */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Profile Information</h2>
+              <p className="text-sm text-gray-500">Update your personal and business details</p>
+            </div>
             
-            <Input
-              label="Your Name"
-              icon={User}
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Enter your name"
-              required
-            />
+            <div className="space-y-6">
+              {/* Your Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Your Name *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    placeholder="Enter your full name"
+                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                    required
+                  />
+                </div>
+              </div>
 
-            <Input
-              label="Business Name"
-              icon={Building}
-              name="businessName"
-              value={formData.businessName}
-              onChange={handleInputChange}
-              placeholder="Enter business name"
-              required
-            />
+              {/* Business Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Business Name *
+                </label>
+                <div className="relative">
+                  <Building className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleInputChange}
+                    placeholder="Enter your business name"
+                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                    required
+                  />
+                </div>
+              </div>
 
-            <Input
-              label="Phone Number"
-              icon={Phone}
-              name="phoneNumber"
-              type="tel"
-              value={formData.phoneNumber}
-              onChange={handleInputChange}
-              placeholder="+1 (555) 123-4567"
-              required
-            />
-          </Card>
+              {/* Phone Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  Phone Number *
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    placeholder="+1 (555) 123-4567"
+                    className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
-          {/* Catalog Link */}
-          <Card>
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">Your Catalog Link</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Share this link with customers to showcase your products
-            </p>
-            <div className="flex items-center space-x-2">
-              <div className="flex-1 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <code className="text-sm text-gray-700 break-all">
+          {/* Catalog Link Section */}
+          <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2 flex items-center space-x-2">
+                <Link2 className="w-5 h-5 text-teal-600" />
+                <span>Your Store Link</span>
+              </h2>
+              <p className="text-sm text-gray-500">Share this link with customers to showcase your products</p>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <div className="flex-1 bg-gray-50 p-4 rounded-2xl border border-gray-200">
+                <code className="text-sm text-gray-700 break-all font-mono">
                   {window.location.origin}/catalog/{vendor?.catalogId}
                 </code>
               </div>
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 onClick={copyLink}
-                className="flex-shrink-0"
+                className="px-4 py-4 bg-teal-100 text-teal-700 rounded-2xl hover:bg-teal-200 transition-colors flex items-center justify-center"
               >
-                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              </Button>
+                {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+              </button>
             </div>
-          </Card>
+            {copied && (
+              <p className="text-sm text-teal-600 mt-2 flex items-center space-x-1">
+                <Check className="w-4 h-4" />
+                <span>Link copied to clipboard!</span>
+              </p>
+            )}
+          </div>
 
-          <Button
-            type="submit"
-            disabled={loading || !formData.name || !formData.businessName || !formData.phoneNumber}
-            loading={loading}
-            className="w-full"
-            size="lg"
-          >
-            {loading ? 'Saving Changes...' : 'Save Changes'}
-          </Button>
+          {/* Submit Button */}
+          <div className="flex space-x-4">
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard')}
+              className="flex-1 py-4 px-6 border border-gray-200 text-gray-700 rounded-2xl hover:bg-gray-50 transition-all duration-200 font-medium"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading || !formData.name || !formData.businessName || !formData.phoneNumber}
+              className="flex-1 py-4 px-6 bg-teal-600 text-white rounded-2xl hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center justify-center space-x-2"
+            >
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Saving Changes...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-5 h-5" />
+                  <span>Save Changes</span>
+                </>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>

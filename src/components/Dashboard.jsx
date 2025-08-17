@@ -84,7 +84,7 @@ const Dashboard = () => {
   }
 
   const handleShareCatalog = () => {
-    const catalogUrl = `https://whatsapp-buyer-frontend.vercel.app/catalog/${vendor?.catalogId}`
+    const catalogUrl = `${window.location.origin}/catalog/${vendor?.catalogId}`
     const message = `🛍️ Check out my online store: ${catalogUrl}`
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
@@ -189,7 +189,7 @@ const Dashboard = () => {
               <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
                 <Users className="w-5 h-5 text-purple-600" />
               </div>
-              <Target className="w-4 h-4 text-purple-500" />
+              <Target className="w-4 h-4 text-purple-500 " />
             </div>
             <p className="text-2xl font-bold text-gray-900">{stats.totalCustomers}</p>
             <p className="text-sm text-gray-600">Customers</p>
@@ -260,6 +260,8 @@ const Dashboard = () => {
               </div>
               <span className="font-medium text-purple-700">Share Store</span>
             </button>
+
+
 
             <Link
               to="/analytics"
