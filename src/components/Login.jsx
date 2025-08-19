@@ -37,16 +37,20 @@ const Login = () => {
         password: formData.password
       })
       
-      if (response.data.token && response.data.vendor) {
+      console.log('Login response:', response.data)
+      
+      if (response.data.token && response.data.user && response.data.user.role === 'vendor') {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('loginTime', Date.now().toString())
-        login(response.data.vendor)
+        login(response.data.user)
         navigate('/dashboard', { replace: true })
       } else {
+        console.log('Missing token or user:', { token: !!response.data.token, user: !!response.data.user, role: response.data.user?.role })
         setError('Invalid response from server')
       }
     } catch (error) {
       console.error('Login error:', error)
+      console.error('Error response:', error.response?.data)
       if (error.response?.data?.message === 'Please verify your email first') {
         setEmail(formData.email)
         setMode('verify')
