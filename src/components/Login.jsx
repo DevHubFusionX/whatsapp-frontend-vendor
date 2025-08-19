@@ -37,12 +37,16 @@ const Login = () => {
         password: formData.password
       })
       
-      if (response.data.token) {
+      if (response.data.token && response.data.vendor) {
         localStorage.setItem('token', response.data.token)
+        localStorage.setItem('loginTime', Date.now().toString())
         login(response.data.vendor)
-        navigate('/dashboard')
+        navigate('/dashboard', { replace: true })
+      } else {
+        setError('Invalid response from server')
       }
     } catch (error) {
+      console.error('Login error:', error)
       if (error.response?.data?.message === 'Please verify your email first') {
         setEmail(formData.email)
         setMode('verify')

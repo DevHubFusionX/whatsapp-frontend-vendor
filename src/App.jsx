@@ -31,22 +31,33 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {
+      // Check session timeout first
+      const loginTime = localStorage.getItem('loginTime')
+      if (loginTime && Date.now() - parseInt(loginTime) > 24 * 60 * 60 * 1000) {
+        logout()
+        setLoading(false)
+        return
+      }
+      
       authAPI.getMe()
         .then(response => {
-          setVendor(response.data.vendor)
-          setIsAuthenticated(true)
-          // Set session timeout (24 hours)
-          const loginTime = localStorage.getItem('loginTime')
-          if (!loginTime || Date.now() - parseInt(loginTime) > 24 * 60 * 60 * 1000) {
+          if (response.data.vendor) {
+            setVendor(response.data.vendor)
+            setIsAuthenticated(true)
+          } else {
             logout()
           }
         })
-        .catch(() => {
-          localStorage.removeItem('token')
-          localStorage.removeItem('loginTime')
+        .catch((error) => {
+          console.error('Auth check failed:', error)
+          logout()
         })
+        .finally(() => {
+          setLoading(false)
+        })
+    } else {
+      setLoading(false)
     }
-    setLoading(false)
   }, [])
 
   const login = (vendorData) => {
