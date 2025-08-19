@@ -7,7 +7,8 @@ import AddProduct from './components/AddProduct'
 import EditProduct from './components/product/EditProduct'
 import CatalogPage from './components/CatalogPage'
 import Settings from './components/Settings'
-import VendorProductList from './components/vendor/VendorProductList'
+import ProductManagement from './components/ProductManagement'
+import StorePreview from './components/StorePreview'
 import BuyerInteractions from './components/BuyerInteractions'
 import TestAuth from './components/TestAuth'
 
@@ -90,7 +91,11 @@ function App() {
 
             <Route 
               path="/products" 
-              element={isAuthenticated ? <VendorProductList /> : <Navigate to="/login" />} 
+              element={isAuthenticated ? <ProductManagement /> : <Navigate to="/login" />} 
+            />
+            <Route 
+              path="/store-preview" 
+              element={isAuthenticated ? <StorePreview /> : <Navigate to="/login" />} 
             />
             <Route 
               path="/buyers" 

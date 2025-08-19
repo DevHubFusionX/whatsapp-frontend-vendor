@@ -135,7 +135,7 @@ const AddProduct = () => {
           <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
             <div className="mb-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-2">Product Details</h2>
-              <p className="text-sm text-gray-500">Fill in the basic information about your product</p>
+              <p className="text-sm text-gray-500">Add product info that buyers will see in your catalog</p>
             </div>
             
             <div className="space-y-6">
@@ -182,7 +182,7 @@ const AddProduct = () => {
               {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Description
+                  Short Description
                 </label>
                 <div className="relative">
                   <FileText className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
@@ -190,11 +190,13 @@ const AddProduct = () => {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    placeholder="Describe your product in detail..."
-                    rows={4}
+                    placeholder="Brief description for WhatsApp messages..."
+                    rows={3}
+                    maxLength={100}
                     className="w-full pl-12 pr-4 py-4 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none hover:border-gray-300 transition-all duration-200 text-gray-900 placeholder-gray-400"
                   />
                 </div>
+                <p className="text-xs text-gray-400 mt-1">{formData.description.length}/100 characters</p>
               </div>
             </div>
           </div>

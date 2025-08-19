@@ -35,24 +35,23 @@ const ProductManagement = () => {
   }
 
   const handleShareProduct = (product) => {
-    const message = `🛍️ *${product.name}*\n\n${product.description}\n\n💰 *Price: ₦${product.price.toLocaleString()}*\n\n📱 Order now via WhatsApp!`
+    const storeUrl = `${window.location.origin.replace('5173', '5174')}/product/${product._id}`
+    const message = `🛍️ Check out this product: ${product.name} - ₦${product.price.toLocaleString()}\n\n${storeUrl}`
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
 
-  const getStockStatus = (product) => {
-    const stock = product.stock || 0
-    if (stock > 10) return { label: 'In Stock', color: 'bg-green-100 text-green-800' }
-    if (stock > 0) return { label: 'Low Stock', color: 'bg-yellow-100 text-yellow-800' }
-    return { label: 'Out of Stock', color: 'bg-red-100 text-red-800' }
+  const getProductStatus = (product) => {
+    return product.isActive !== false 
+      ? { label: 'Active', color: 'bg-green-100 text-green-800' }
+      : { label: 'Hidden', color: 'bg-gray-100 text-gray-800' }
   }
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    const stock = product.stock || 0
     const matchesFilter = filterStatus === 'all' || 
-      (filterStatus === 'in-stock' && stock > 0) ||
-      (filterStatus === 'out-of-stock' && stock === 0)
+      (filterStatus === 'active' && product.isActive !== false) ||
+      (filterStatus === 'hidden' && product.isActive === false)
     return matchesSearch && matchesFilter
   })
 
@@ -67,8 +66,8 @@ const ProductManagement = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header
-        title="Product Management"
-        subtitle={`${products.length} products in your catalog`}
+        title="My Products"
+        subtitle={`${products.length} products in your store catalog`}
       />
 
       <div className="p-4 space-y-6">
@@ -92,8 +91,8 @@ const ProductManagement = () => {
               className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             >
               <option value="all">All Products</option>
-              <option value="in-stock">In Stock</option>
-              <option value="out-of-stock">Out of Stock</option>
+              <option value="active">Active</option>
+              <option value="hidden">Hidden</option>
             </select>
           </div>
 
@@ -106,10 +105,7 @@ const ProductManagement = () => {
               <span>Add Product</span>
             </Link>
             
-            <button className="flex items-center justify-center space-x-2 border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-medium hover:bg-gray-50 transition-colors">
-              <Upload className="w-5 h-5" />
-              <span>Bulk Upload</span>
-            </button>
+
           </div>
         </div>
 
@@ -130,7 +126,7 @@ const ProductManagement = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => {
-              const stockStatus = getStockStatus(product)
+              const productStatus = getProductStatus(product)
               return (
                 <div key={product._id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                   <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
@@ -143,8 +139,8 @@ const ProductManagement = () => {
                     ) : (
                       <div className="text-6xl">📦</div>
                     )}
-                    <div className={`absolute top-3 right-3 px-2 py-1 rounded-lg text-xs font-medium ${stockStatus.color}`}>
-                      {stockStatus.label}
+                    <div className={`absolute top-3 right-3 px-2 py-1 rounded-lg text-xs font-medium ${productStatus.color}`}>
+                      {productStatus.label}
                     </div>
                   </div>
                   

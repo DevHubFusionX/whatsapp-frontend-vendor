@@ -35,11 +35,21 @@ const Dashboard = () => {
     fetchDashboardData()
   }, [])
 
-  const handleShareCatalog = () => {
-    const catalogUrl = `${window.location.origin}/catalog/${vendor?.catalogId}`
-    const message = `🛍️ Check out my online store: ${catalogUrl}`
+  const getStoreUrl = () => {
+    return `${window.location.origin.replace('5173', '5174')}/store/${vendor?._id}`
+  }
+
+  const handleShareStore = () => {
+    const storeUrl = getStoreUrl()
+    const message = `🛍️ Check out my store catalog: ${storeUrl}`
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
+  }
+
+  const copyStoreLink = () => {
+    const storeUrl = getStoreUrl()
+    navigator.clipboard.writeText(storeUrl)
+    alert('Store link copied to clipboard!')
   }
 
   if (loading) {
@@ -81,29 +91,52 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Store Link Section */}
+        <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl p-6 text-white shadow-lg">
+          <h2 className="text-lg font-bold mb-2">Your Store Link</h2>
+          <p className="text-green-100 text-sm mb-4">Share this link everywhere to get more customers!</p>
+          <div className="bg-white/20 rounded-xl p-3 mb-4">
+            <p className="text-sm font-mono break-all">{getStoreUrl()}</p>
+          </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={copyStoreLink}
+              className="flex-1 bg-white/20 hover:bg-white/30 py-3 rounded-xl font-medium transition-colors"
+            >
+              Copy Link
+            </button>
+            <button
+              onClick={handleShareStore}
+              className="flex-1 bg-white/20 hover:bg-white/30 py-3 rounded-xl font-medium transition-colors"
+            >
+              Share on WhatsApp
+            </button>
+          </div>
+        </div>
+
         {/* Quick Actions */}
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => window.open(`${window.location.origin}/catalog/${vendor?.catalogId}`, '_blank')}
+            <Link
+              to="/store-preview"
               className="flex flex-col items-center p-6 bg-green-50 rounded-2xl hover:bg-green-100 transition-colors"
             >
               <div className="w-14 h-14 bg-green-500 rounded-2xl flex items-center justify-center mb-3">
                 <Eye className="w-7 h-7 text-white" />
               </div>
-              <span className="font-medium text-green-700">View My Catalog</span>
-            </button>
+              <span className="font-medium text-green-700">Preview Store</span>
+            </Link>
 
-            <button
-              onClick={handleShareCatalog}
+            <Link
+              to="/add-product"
               className="flex flex-col items-center p-6 bg-blue-50 rounded-2xl hover:bg-blue-100 transition-colors"
             >
               <div className="w-14 h-14 bg-blue-500 rounded-2xl flex items-center justify-center mb-3">
-                <Share2 className="w-7 h-7 text-white" />
+                <Plus className="w-7 h-7 text-white" />
               </div>
-              <span className="font-medium text-blue-700">Share My Catalog</span>
-            </button>
+              <span className="font-medium text-blue-700">Add Product</span>
+            </Link>
           </div>
         </div>
 
