@@ -3,11 +3,15 @@ import { Plus, Package, Users, Eye, Share2, Settings } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../App'
 import Header from './ui/Header'
+import Toast from './ui/Toast'
+import { DashboardSkeleton } from './ui/LoadingSkeleton'
+import { useToast } from '../hooks/useToast'
 import { productsAPI } from '../services/api'
 
 const Dashboard = () => {
   const { vendor } = useAuth()
   const navigate = useNavigate()
+  const { toasts, success, error, removeToast } = useToast()
   const [stats, setStats] = useState({
     totalProducts: 0,
     buyersContacted: 0
@@ -46,16 +50,21 @@ const Dashboard = () => {
     window.open(whatsappUrl, '_blank')
   }
 
-  const copyStoreLink = () => {
+  const copyStoreLink = async () => {
     const storeUrl = getStoreUrl()
-    navigator.clipboard.writeText(storeUrl)
-    alert('Store link copied to clipboard!')
+    try {
+      await navigator.clipboard.writeText(storeUrl)
+      success('Store link copied to clipboard!')
+    } catch (err) {
+      error('Failed to copy link')
+    }
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-gray-50">
+        <Header title="Dashboard" subtitle="Loading..." showLogout={false} />
+        <DashboardSkeleton />
       </div>
     )
   }
@@ -198,6 +207,17 @@ const Dashboard = () => {
       >
         <Plus className="w-7 h-7" />
       </Link>
+
+      {/* Toast Notifications */}
+      {toasts.map(toast => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
     </div>
   )
 }

@@ -1,7 +1,16 @@
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, LogOut } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../App'
 
-const Header = ({ title, subtitle, backTo, actions }) => {
+const Header = ({ title, subtitle, backTo, actions, showLogout = true }) => {
+  const { vendor, logout } = useAuth()
+
+  const handleLogout = () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      logout()
+    }
+  }
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-10">
       <div className="px-4 py-4 flex items-center justify-between">
@@ -21,11 +30,21 @@ const Header = ({ title, subtitle, backTo, actions }) => {
             )}
           </div>
         </div>
-        {actions && (
-          <div className="flex items-center space-x-2">
-            {actions}
-          </div>
-        )}
+        <div className="flex items-center space-x-3">
+          {vendor?.businessName && (
+            <span className="text-sm font-medium text-gray-700">{vendor.businessName}</span>
+          )}
+          {actions}
+          {showLogout && (
+            <button
+              onClick={handleLogout}
+              className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-5 h-5" />
+            </button>
+          )}
+        </div>
       </div>
     </header>
   )

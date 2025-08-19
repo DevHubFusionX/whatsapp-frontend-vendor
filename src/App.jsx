@@ -34,9 +34,15 @@ function App() {
         .then(response => {
           setVendor(response.data.vendor)
           setIsAuthenticated(true)
+          // Set session timeout (24 hours)
+          const loginTime = localStorage.getItem('loginTime')
+          if (!loginTime || Date.now() - parseInt(loginTime) > 24 * 60 * 60 * 1000) {
+            logout()
+          }
         })
         .catch(() => {
           localStorage.removeItem('token')
+          localStorage.removeItem('loginTime')
         })
     }
     setLoading(false)
@@ -45,12 +51,14 @@ function App() {
   const login = (vendorData) => {
     setIsAuthenticated(true)
     setVendor(vendorData)
+    localStorage.setItem('loginTime', Date.now().toString())
   }
 
   const logout = () => {
     setIsAuthenticated(false)
     setVendor(null)
     localStorage.removeItem('token')
+    localStorage.removeItem('loginTime')
   }
 
   if (loading) {

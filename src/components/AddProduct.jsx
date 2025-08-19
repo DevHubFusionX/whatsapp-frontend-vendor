@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Upload, X, Package, DollarSign, FileText, Plus } from 'lucide-react'
 import { productsAPI } from '../services/api'
+import { formatPrice, validateFile } from '../utils/formatters'
+import { useToast } from '../hooks/useToast'
+import Toast from './ui/Toast'
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +15,8 @@ const AddProduct = () => {
   })
   const [imagePreview, setImagePreview] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
+  const { toasts, success, error, removeToast } = useToast()
   const navigate = useNavigate()
 
   const handleInputChange = (e) => {
@@ -25,6 +30,13 @@ const AddProduct = () => {
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
+      const validation = validateFile(file)
+      if (!validation.isValid) {
+        setErrors({ ...errors, image: validation.errors[0] })
+        return
+      }
+      
+      setErrors({ ...errors, image: '' })
       setFormData(prev => ({
         ...prev,
         image: file
@@ -48,16 +60,27 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setLoading(true)
     
+    const newErrors = {}
+    if (!formData.name.trim()) newErrors.name = 'Product name is required'
+    if (!formData.price || formData.price <= 0) newErrors.price = 'Valid price is required'
+    if (!imagePreview) newErrors.image = 'Product image is required'
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    
+    setLoading(true)
     try {
       await productsAPI.addProduct({
         ...formData,
         image: imagePreview
       })
-      navigate('/dashboard')
-    } catch (error) {
-      console.error('Failed to add product:', error)
+      success('Product added successfully!')
+      setTimeout(() => navigate('/products'), 1000)
+    } catch (err) {
+      error('Failed to add product. Please try again.')
     }
     setLoading(false)
   }
@@ -230,6 +253,17 @@ const AddProduct = () => {
           </div>
         </form>
       </div>
+      
+      {/* Toast Notifications */}
+      {toasts.map(toast => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
     </div>
   )
 }
