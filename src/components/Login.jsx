@@ -39,23 +39,33 @@ const Login = () => {
       
       console.log('Login response:', response.data)
       
-      if (response.data.token && response.data.user && response.data.user.role === 'vendor') {
+      // Handle both new unified format and old vendor format
+      if (response.data.token && (response.data.user || response.data.vendor)) {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('loginTime', Date.now().toString())
-        login(response.data.user)
+        
+        // Use new format if available, fallback to old format
+        const userData = response.data.user || {
+          ...response.data.vendor,
+          role: 'vendor',
+          phone: response.data.vendor.phoneNumber
+        }
+        
+        login(userData)
         navigate('/dashboard', { replace: true })
       } else {
-        console.log('Missing token or user:', { token: !!response.data.token, user: !!response.data.user, role: response.data.user?.role })
+        console.log('Missing token or user:', { token: !!response.data.token, user: !!response.data.user, vendor: !!response.data.vendor })
         setError('Invalid response from server')
       }
     } catch (error) {
       console.error('Login error:', error)
       console.error('Error response:', error.response?.data)
+      console.error('Error status:', error.response?.status)
       if (error.response?.data?.message === 'Please verify your email first') {
         setEmail(formData.email)
         setMode('verify')
       } else {
-        setError(error.response?.data?.message || 'Login failed')
+        setError(error.response?.data?.message || error.response?.data?.errors?.[0]?.msg || 'Login failed')
       }
     }
     setLoading(false)
