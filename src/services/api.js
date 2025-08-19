@@ -33,7 +33,10 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   verifyOTP: (email, otp) => api.post('/auth/verify-otp', { email, otp }),
   resendOTP: (email) => api.post('/auth/resend-otp', { email }),
-  getMe: () => api.get('/auth/me')
+  getMe: () => api.get('/auth/me'),
+  vendorForgotPassword: (data) => api.post('/auth/vendor/forgot-password', data),
+  vendorVerifyOTP: (data) => api.post('/auth/vendor/verify-otp', data),
+  vendorResetPassword: (data) => api.post('/auth/vendor/reset-password', data)
 };
 
 export const productsAPI = {
