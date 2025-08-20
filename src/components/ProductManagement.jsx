@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Plus, Edit, Trash2, Share2, Upload, Search, Filter } from 'lucide-react'
+import { Plus, Edit, Trash2, Share2, Upload, Search, Filter, Package } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import Header from './ui/Header'
 import { productsAPI } from '../services/api'
 
 const ProductManagement = () => {
@@ -64,13 +63,19 @@ const ProductManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header
-        title="My Products"
-        subtitle={`${products.length} products in your store catalog`}
-      />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
+      {/* Page Header */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50 px-4 py-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center mb-2">
+            <Package className="w-6 h-6 text-blue-600 mr-3" />
+            <h1 className="text-2xl font-bold text-gray-900">My Products</h1>
+          </div>
+          <p className="text-gray-600">{products.length} products in your store catalog</p>
+        </div>
+      </div>
 
-      <div className="p-4 space-y-6">
+      <div className="max-w-7xl mx-auto p-4 space-y-6">
         {/* Controls */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex flex-col sm:flex-row gap-4 mb-4">

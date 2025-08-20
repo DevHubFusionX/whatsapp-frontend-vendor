@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, createContext, useContext, useEffect } from 'react'
 import { authAPI } from './services/api'
+import Navbar from './components/ui/Navbar'
 import Login from './components/Login'
 import ForgotPassword from './components/auth/ForgotPassword'
 import Dashboard from './components/Dashboard'
@@ -94,6 +95,7 @@ function App() {
     }}>
       <Router>
         <div className="min-h-screen bg-gray-50">
+          {isAuthenticated && <Navbar />}
           <Routes>
             <Route 
               path="/login" 
