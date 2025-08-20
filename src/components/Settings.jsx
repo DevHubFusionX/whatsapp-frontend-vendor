@@ -131,32 +131,32 @@ const Settings = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
       {/* Enhanced Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200/50">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <button
                 onClick={() => navigate('/dashboard')}
-                className="w-12 h-12 rounded-2xl bg-gray-100/80 hover:bg-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gray-100/80 hover:bg-gray-200 flex items-center justify-center transition-all duration-200 hover:scale-105 flex-shrink-0"
               >
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
               </button>
-              <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <SettingsIcon className="w-7 h-7 text-white" />
+              <div className="flex items-center space-x-2 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+                  <SettingsIcon className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                 </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-                  <p className="text-gray-600">Manage your business profile and preferences</p>
+                <div className="min-w-0">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 truncate">Settings</h1>
+                  <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Manage your business profile and preferences</p>
                 </div>
               </div>
             </div>
-            <div className="hidden sm:flex items-center space-x-3">
-              <div className="text-right">
-                <p className="font-semibold text-gray-900">{vendor?.businessName}</p>
-                <p className="text-sm text-gray-500">{vendor?.email}</p>
+            <div className="flex items-center justify-between sm:justify-end space-x-3">
+              <div className="text-left sm:text-right min-w-0 flex-1 sm:flex-none">
+                <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">{vendor?.businessName}</p>
+                <p className="text-xs sm:text-sm text-gray-500 truncate">{vendor?.email}</p>
               </div>
-              <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-2xl flex items-center justify-center">
-                <span className="text-white font-bold text-lg">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                <span className="text-white font-bold text-sm sm:text-lg">
                   {vendor?.businessName?.charAt(0) || 'V'}
                 </span>
               </div>
@@ -167,22 +167,22 @@ const Settings = () => {
 
       {/* Tab Navigation */}
       <div className="bg-white/60 backdrop-blur-sm border-b border-gray-200/50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex space-x-1">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex overflow-x-auto scrollbar-hide">
             {tabs.map((tab) => {
               const Icon = tab.icon
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center space-x-2 px-6 py-4 font-medium transition-all duration-200 border-b-2 ${
+                  className={`flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 font-medium transition-all duration-200 border-b-2 whitespace-nowrap text-sm sm:text-base ${
                     activeTab === tab.id
                       ? 'border-blue-500 text-blue-600 bg-blue-50/50'
                       : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-50/50'
                   }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  <span className="hidden xs:inline sm:inline">{tab.label}</span>
                 </button>
               )
             })}
@@ -191,8 +191,8 @@ const Settings = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 lg:space-y-8">
           {/* Profile Tab */}
           {activeTab === 'profile' && (
             <>
@@ -206,9 +206,9 @@ const Settings = () => {
                   <p className="text-gray-600">Upload your business logo to personalize your store</p>
                 </div>
                 
-                <div className="flex flex-col lg:flex-row items-center lg:items-start space-y-6 lg:space-y-0 lg:space-x-12">
-                  <div className="relative group">
-                    <div className="w-40 h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center overflow-hidden border-4 border-white shadow-xl">
+                <div className="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8 lg:space-x-12">
+                  <div className="relative group flex-shrink-0">
+                    <div className="w-32 h-32 sm:w-36 sm:h-36 lg:w-40 lg:h-40 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl sm:rounded-3xl flex items-center justify-center overflow-hidden border-2 sm:border-4 border-white shadow-xl">
                       {logoPreview ? (
                         <img
                           src={logoPreview}
@@ -216,21 +216,21 @@ const Settings = () => {
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         />
                       ) : (
-                        <Building className="w-16 h-16 text-gray-400" />
+                        <Building className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 text-gray-400" />
                       )}
                     </div>
                     {imageUploading && (
-                      <div className="absolute inset-0 bg-black/50 rounded-3xl flex items-center justify-center">
-                        <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <div className="absolute inset-0 bg-black/50 rounded-2xl sm:rounded-3xl flex items-center justify-center">
+                        <div className="w-6 h-6 sm:w-8 sm:h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
                       </div>
                     )}
                   </div>
                   
-                  <div className="flex-1 space-y-6">
+                  <div className="flex-1 space-y-4 sm:space-y-6 w-full">
                     {logoPreview ? (
-                      <div className="flex flex-wrap gap-3">
-                        <label className="cursor-pointer group">
-                          <div className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 font-medium shadow-lg hover:shadow-xl transform hover:scale-105">
+                      <div className="flex flex-col xs:flex-row gap-3">
+                        <label className="cursor-pointer group flex-1 xs:flex-none">
+                          <div className="px-4 sm:px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 text-sm sm:text-base">
                             <Upload className="w-4 h-4" />
                             <span>Change Photo</span>
                           </div>
@@ -245,21 +245,21 @@ const Settings = () => {
                         <button
                           type="button"
                           onClick={removeLogo}
-                          className="px-6 py-3 bg-red-100 text-red-700 rounded-2xl hover:bg-red-200 transition-all duration-200 flex items-center space-x-2 font-medium hover:scale-105"
+                          className="px-4 sm:px-6 py-3 bg-red-100 text-red-700 rounded-xl sm:rounded-2xl hover:bg-red-200 transition-all duration-200 flex items-center justify-center space-x-2 font-medium hover:scale-105 text-sm sm:text-base flex-1 xs:flex-none"
                         >
                           <X className="w-4 h-4" />
                           <span>Remove</span>
                         </button>
                       </div>
                     ) : (
-                      <label className="cursor-pointer group">
-                        <div className="px-8 py-6 border-2 border-dashed border-gray-300 rounded-3xl hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 flex flex-col items-center space-y-3 text-gray-600 hover:text-blue-600">
-                          <div className="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                            <Upload className="w-6 h-6 text-blue-600" />
+                      <label className="cursor-pointer group block">
+                        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 border-2 border-dashed border-gray-300 rounded-2xl sm:rounded-3xl hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 flex flex-col items-center space-y-3 text-gray-600 hover:text-blue-600">
+                          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                            <Upload className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                           </div>
                           <div className="text-center">
-                            <p className="font-semibold">Upload Business Logo</p>
-                            <p className="text-sm text-gray-500">Drag & drop or click to browse</p>
+                            <p className="font-semibold text-sm sm:text-base">Upload Business Logo</p>
+                            <p className="text-xs sm:text-sm text-gray-500">Drag & drop or click to browse</p>
                           </div>
                         </div>
                         <input
@@ -546,29 +546,31 @@ const Settings = () => {
           )}
 
           {/* Submit Button */}
-          <div className="sticky bottom-0 bg-white/80 backdrop-blur-sm border-t border-gray-200/50 p-6 -mx-4 -mb-8">
-            <div className="max-w-6xl mx-auto flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
+          <div className="sticky bottom-0 bg-white/80 backdrop-blur-sm border-t border-gray-200/50 p-3 sm:p-4 lg:p-6 -mx-3 sm:-mx-4 lg:-mx-6 -mb-4 sm:-mb-6 lg:-mb-8">
+            <div className="max-w-6xl mx-auto flex flex-col xs:flex-row space-y-3 xs:space-y-0 xs:space-x-3 sm:space-x-4">
               <button
                 type="button"
                 onClick={() => navigate('/dashboard')}
-                className="flex-1 py-4 px-6 border-2 border-gray-200 text-gray-700 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-semibold"
+                className="flex-1 py-3 sm:py-4 px-4 sm:px-6 border-2 border-gray-200 text-gray-700 rounded-xl sm:rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-semibold text-sm sm:text-base"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || !formData.name || !formData.businessName || !formData.phone}
-                className="flex-1 py-4 px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl hover:from-blue-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-semibold flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
+                className="flex-1 py-3 sm:py-4 px-4 sm:px-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl sm:rounded-2xl hover:from-blue-600 hover:to-purple-700 disabled:from-gray-300 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-semibold flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none text-sm sm:text-base"
               >
                 {loading ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Saving Changes...</span>
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="hidden xs:inline">Saving Changes...</span>
+                    <span className="xs:hidden">Saving...</span>
                   </>
                 ) : (
                   <>
-                    <Save className="w-5 h-5" />
-                    <span>Save Changes</span>
+                    <Save className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="hidden xs:inline">Save Changes</span>
+                    <span className="xs:hidden">Save</span>
                   </>
                 )}
               </button>
