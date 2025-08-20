@@ -39,22 +39,11 @@ const Login = () => {
       
       console.log('Login response:', response.data)
       
-      // Handle both new unified format and old vendor format
-      if (response.data.token && (response.data.user || response.data.vendor)) {
+      if (response.data.token && response.data.user) {
         localStorage.setItem('token', response.data.token)
-        localStorage.setItem('loginTime', Date.now().toString())
-        
-        // Use new format if available, fallback to old format
-        const userData = response.data.user || {
-          ...response.data.vendor,
-          role: 'vendor',
-          phone: response.data.vendor.phoneNumber
-        }
-        
-        login(userData)
+        login(response.data.user)
         navigate('/dashboard', { replace: true })
       } else {
-        console.log('Missing token or user:', { token: !!response.data.token, user: !!response.data.user, vendor: !!response.data.vendor })
         setError('Invalid response from server')
       }
     } catch (error) {
@@ -79,7 +68,7 @@ const Login = () => {
     try {
       await authAPI.register({
         businessName: formData.businessName,
-        ownerName: formData.ownerName,
+        name: formData.ownerName,
         email: formData.email,
         password: formData.password,
         phoneNumber: formData.phoneNumber

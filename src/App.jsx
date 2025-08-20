@@ -12,13 +12,15 @@ import ProductManagement from './components/ProductManagement'
 import StorePreview from './components/StorePreview'
 import BuyerInteractions from './components/BuyerInteractions'
 import TestAuth from './components/TestAuth'
+import TestLogin from './components/TestLogin'
 
 const AuthContext = createContext()
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
+    console.error('useAuth called outside AuthProvider')
+    return { isAuthenticated: false, vendor: null, login: () => {}, logout: () => {} }
   }
   return context
 }
@@ -41,8 +43,8 @@ function App() {
       
       authAPI.getMe()
         .then(response => {
-          if (response.data.vendor) {
-            setVendor(response.data.vendor)
+          if (response.data.user) {
+            setVendor(response.data.user)
             setIsAuthenticated(true)
           } else {
             logout()
@@ -61,6 +63,7 @@ function App() {
   }, [])
 
   const login = (vendorData) => {
+    console.log('Setting authentication state:', vendorData)
     setIsAuthenticated(true)
     setVendor(vendorData)
     localStorage.setItem('loginTime', Date.now().toString())
@@ -140,6 +143,10 @@ function App() {
             <Route 
               path="/test-auth" 
               element={<TestAuth />} 
+            />
+            <Route 
+              path="/test-login" 
+              element={<TestLogin />} 
             />
             <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
           </Routes>
