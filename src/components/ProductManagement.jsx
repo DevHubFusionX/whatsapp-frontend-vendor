@@ -76,107 +76,123 @@ const ProductManagement = () => {
       </div>
 
       <div className="max-w-7xl mx-auto p-4 space-y-6">
-        {/* Controls */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex flex-col sm:flex-row gap-4 mb-4">
+        {/* Enhanced Controls */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 shadow-sm border border-white/50">
+          <div className="flex flex-col lg:flex-row gap-6 mb-6">
             <div className="relative flex-1">
-              <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
+              <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Search your amazing products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                className="w-full pl-12 pr-4 py-4 bg-gray-50/50 border border-gray-200/50 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-200 placeholder-gray-400"
               />
             </div>
             
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-            >
-              <option value="all">All Products</option>
-              <option value="active">Active</option>
-              <option value="hidden">Hidden</option>
-            </select>
+            <div className="flex gap-3">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-6 py-4 bg-gray-50/50 border border-gray-200/50 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-200 font-medium"
+              >
+                <option value="all">All Products</option>
+                <option value="active">✅ Active</option>
+                <option value="hidden">👁️ Hidden</option>
+              </select>
+            </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row gap-4">
             <Link
               to="/add-product"
-              className="flex items-center justify-center space-x-2 bg-teal-500 text-white px-6 py-3 rounded-xl font-medium hover:bg-teal-600 transition-colors"
+              className="group flex items-center justify-center space-x-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
-              <Plus className="w-5 h-5" />
-              <span>Add Product</span>
+              <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
+              <span>Add New Product</span>
             </Link>
             
-
+            <div className="flex items-center space-x-4 text-sm text-gray-600">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>{filteredProducts.filter(p => p.isActive !== false).length} Active</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+                <span>{filteredProducts.filter(p => p.isActive === false).length} Hidden</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Products Grid */}
+        {/* Enhanced Products Grid */}
         {filteredProducts.length === 0 ? (
-          <div className="bg-white rounded-2xl p-12 shadow-sm text-center">
-            <div className="text-6xl mb-4">📦</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-600 mb-6">Start by adding your first product to your catalog</p>
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-16 shadow-sm border border-white/50 text-center">
+            <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-purple-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Package className="w-12 h-12 text-blue-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">No products found</h3>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">Start building your amazing catalog by adding your first product. Your customers are waiting!</p>
             <Link
               to="/add-product"
-              className="inline-flex items-center space-x-2 bg-teal-500 text-white px-6 py-3 rounded-xl font-medium hover:bg-teal-600 transition-colors"
+              className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               <Plus className="w-5 h-5" />
               <span>Add Your First Product</span>
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
             {filteredProducts.map((product) => {
               const productStatus = getProductStatus(product)
               return (
-                <div key={product._id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
-                  <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
+                <div key={product._id} className="group bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm overflow-hidden hover:shadow-2xl transition-all duration-300 border border-white/50 hover:scale-105">
+                  <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative overflow-hidden">
                     {product.image ? (
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="text-6xl">📦</div>
+                      <div className="text-8xl opacity-50">📦</div>
                     )}
-                    <div className={`absolute top-3 right-3 px-2 py-1 rounded-lg text-xs font-medium ${productStatus.color}`}>
+                    <div className={`absolute top-4 right-4 px-3 py-1.5 rounded-2xl text-xs font-semibold backdrop-blur-sm ${productStatus.color} border border-white/30`}>
                       {productStatus.label}
                     </div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
                   
-                  <div className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
-                    <p className="text-2xl font-bold text-teal-600 mb-3">₦{product.price.toLocaleString()}</p>
+                  <div className="p-6">
+                    <h3 className="font-bold text-gray-900 mb-2 text-lg line-clamp-2 group-hover:text-blue-600 transition-colors">{product.name}</h3>
+                    <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">₦{product.price.toLocaleString()}</p>
                     
                     {product.description && (
-                      <p className="text-sm text-gray-600 mb-4 line-clamp-2">{product.description}</p>
+                      <p className="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed">{product.description}</p>
                     )}
                     
                     <div className="flex items-center justify-between">
                       <div className="flex space-x-2">
                         <Link
                           to={`/edit-product/${product._id}`}
-                          className="p-2 text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                          className="p-3 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-2xl transition-all duration-200 hover:scale-110"
+                          title="Edit Product"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-5 h-5" />
                         </Link>
                         
                         <button
                           onClick={() => handleDeleteProduct(product._id)}
-                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-3 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-2xl transition-all duration-200 hover:scale-110"
+                          title="Delete Product"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
                       
                       <button
                         onClick={() => handleShareProduct(product)}
-                        className="flex items-center space-x-1 bg-green-500 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-green-600 transition-colors"
+                        className="flex items-center space-x-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-3 rounded-2xl text-sm font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
                       >
                         <Share2 className="w-4 h-4" />
                         <span>Share</span>
@@ -190,12 +206,13 @@ const ProductManagement = () => {
         )}
       </div>
 
-      {/* Floating Add Button */}
+      {/* Enhanced Floating Add Button */}
       <Link
         to="/add-product"
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-teal-500 to-teal-600 text-white rounded-2xl flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+        className="fixed bottom-8 right-8 w-16 h-16 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 text-white rounded-3xl flex items-center justify-center shadow-2xl hover:shadow-3xl transform hover:scale-110 transition-all duration-300 border-2 border-white/20 backdrop-blur-sm group"
       >
-        <Plus className="w-7 h-7" />
+        <Plus className="w-7 h-7 group-hover:rotate-90 transition-transform duration-300" />
+        <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-400 to-purple-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
       </Link>
     </div>
   )
