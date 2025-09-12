@@ -14,6 +14,8 @@ const AddProduct = () => {
     category: 'general'
   })
   const [imagePreview, setImagePreview] = useState(null)
+  const [images, setImages] = useState([])
+  const [imagePreviews, setImagePreviews] = useState([])
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
   const { toasts, success, error, removeToast } = useToast()
@@ -28,33 +30,58 @@ const AddProduct = () => {
   }
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
+    const files = Array.from(e.target.files)
+    if (files.length === 0) return
+
+    const validFiles = []
+    const newPreviews = []
+    let hasError = false
+
+    files.forEach(file => {
       const validation = validateFile(file)
       if (!validation.isValid) {
         setErrors({ ...errors, image: validation.errors[0] })
+        hasError = true
         return
       }
-      
-      setErrors({ ...errors, image: '' })
-      setFormData(prev => ({
-        ...prev,
-        image: file
-      }))
+      validFiles.push(file)
       
       const reader = new FileReader()
       reader.onload = (e) => {
-        setImagePreview(e.target.result)
+        newPreviews.push(e.target.result)
+        if (newPreviews.length === validFiles.length) {
+          setImagePreviews(prev => [...prev, ...newPreviews])
+        }
       }
       reader.readAsDataURL(file)
+    })
+
+    if (!hasError) {
+      setErrors({ ...errors, image: '' })
+      setImages(prev => [...prev, ...validFiles])
+      if (validFiles.length > 0 && !imagePreview) {
+        const reader = new FileReader()
+        reader.onload = (e) => setImagePreview(e.target.result)
+        reader.readAsDataURL(validFiles[0])
+      }
     }
   }
 
-  const removeImage = () => {
-    setFormData(prev => ({
-      ...prev,
-      image: null
-    }))
+  const removeImage = (index) => {
+    const newImages = images.filter((_, i) => i !== index)
+    const newPreviews = imagePreviews.filter((_, i) => i !== index)
+    
+    setImages(newImages)
+    setImagePreviews(newPreviews)
+    
+    if (index === 0) {
+      setImagePreview(newPreviews[0] || null)
+    }
+  }
+
+  const removeAllImages = () => {
+    setImages([])
+    setImagePreviews([])
     setImagePreview(null)
   }
 
@@ -64,7 +91,7 @@ const AddProduct = () => {
     const newErrors = {}
     if (!formData.name.trim()) newErrors.name = 'Product name is required'
     if (!formData.price || formData.price <= 0) newErrors.price = 'Valid price is required'
-    if (!imagePreview) newErrors.image = 'Product image is required'
+    if (images.length === 0) newErrors.image = 'At least one product image is required'
     
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors)
@@ -75,7 +102,8 @@ const AddProduct = () => {
     try {
       await productsAPI.addProduct({
         ...formData,
-        image: imagePreview
+        images: imagePreviews,
+        image: imagePreview // Keep main image for backward compatibility
       })
       success('Product added successfully!')
       setTimeout(() => navigate('/products'), 1000)
@@ -115,22 +143,48 @@ const AddProduct = () => {
               <p className="text-sm text-gray-500">Upload a high-quality image of your product</p>
             </div>
             
-            {imagePreview ? (
-              <div className="relative group">
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  className="w-full h-64 object-cover rounded-2xl"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 rounded-2xl flex items-center justify-center">
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="w-12 h-12 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100 transform scale-90 group-hover:scale-100"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+            {imagePreviews.length > 0 ? (
+              <div className="space-y-4">
+                {/* Main Image */}
+                <div className="relative group">
+                  <img
+                    src={imagePreview}
+                    alt="Main Preview"
+                    className="w-full h-64 object-cover rounded-2xl"
+                  />
                 </div>
+                
+                {/* Image Grid */}
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`Preview ${index + 1}`}
+                        className={`w-full h-20 object-cover rounded-xl cursor-pointer transition-all ${
+                          preview === imagePreview ? 'ring-2 ring-blue-500' : 'hover:opacity-80'
+                        }`}
+                        onClick={() => setImagePreview(preview)}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-all opacity-0 group-hover:opacity-100 text-xs"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Clear All Button */}
+                <button
+                  type="button"
+                  onClick={removeAllImages}
+                  className="w-full py-2 text-red-600 hover:text-red-700 text-sm font-medium transition-colors"
+                >
+                  Remove All Images
+                </button>
               </div>
             ) : (
               <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-gray-200 rounded-2xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all duration-200 group">
@@ -138,16 +192,17 @@ const AddProduct = () => {
                   <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-teal-200 transition-colors">
                     <Upload className="w-8 h-8 text-teal-600" />
                   </div>
-                  <p className="text-lg font-medium text-gray-700 mb-2">Upload Product Image</p>
+                  <p className="text-lg font-medium text-gray-700 mb-2">Upload Product Images</p>
                   <p className="text-sm text-gray-500 text-center">
-                    Drag and drop or click to browse<br />
-                    <span className="text-xs">PNG, JPG or JPEG (MAX. 5MB)</span>
+                    Select multiple images for your product<br />
+                    <span className="text-xs">PNG, JPG or JPEG (MAX. 5MB each)</span>
                   </p>
                 </div>
                 <input
                   type="file"
                   className="hidden"
                   accept="image/*"
+                  multiple
                   onChange={handleImageChange}
                 />
               </label>
@@ -236,7 +291,7 @@ const AddProduct = () => {
             <button
               type="submit"
               disabled={loading || !formData.name || !formData.price}
-              className="flex-1 py-4 px-6 bg-teal-600 text-white rounded-2xl hover:bg-teal-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center justify-center space-x-2"
+              className="flex-1 py-4 px-6 bg-gradient-success text-white rounded-2xl hover:opacity-90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 font-medium flex items-center justify-center space-x-2"
             >
               {loading ? (
                 <>

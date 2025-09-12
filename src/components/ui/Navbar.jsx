@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { 
   Menu, X, Home, Package, Users, Eye, Settings, LogOut, 
-  Bell, Search, ChevronDown, Store, BarChart3, Zap
+  Bell, Search, ChevronDown, Store, BarChart3, Zap, HelpCircle
 } from 'lucide-react'
 import { useAuth } from '../../App'
+import HelpCenter from './HelpCenter'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const [showHelpCenter, setShowHelpCenter] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { vendor, logout } = useAuth()
   const location = useLocation()
@@ -92,11 +94,26 @@ const Navbar = () => {
 
             {/* Right Side Actions */}
             <div className="flex items-center space-x-3">
+              {/* Help Center */}
+              <button 
+                onClick={() => setShowHelpCenter(true)}
+                className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors group"
+                title="Help & Support"
+              >
+                <HelpCircle className="w-5 h-5" />
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Help & Support
+                </div>
+              </button>
+
               {/* Notifications */}
-              <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors">
+              <button className="relative p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-colors group">
                 <Bell className="w-5 h-5" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full flex items-center justify-center">
                   <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+                </div>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Notifications
                 </div>
               </button>
 
@@ -190,6 +207,12 @@ const Navbar = () => {
 
       {/* Spacer for fixed navbar */}
       <div className="h-16"></div>
+
+      {/* Help Center Modal */}
+      <HelpCenter 
+        isOpen={showHelpCenter} 
+        onClose={() => setShowHelpCenter(false)} 
+      />
 
       {/* Click outside to close menus */}
       {(isOpen || showProfileMenu) && (

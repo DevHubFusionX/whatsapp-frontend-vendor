@@ -2,13 +2,38 @@
 @import 'tailwindcss';
 
 :root {
-  /* Brand Colors */
+  /* Marketing Brand Colors - Success & Growth Theme */
   --primary-50: #f0fdf4;
   --primary-100: #dcfce7;
+  --primary-200: #bbf7d0;
+  --primary-300: #86efac;
+  --primary-400: #4ade80;
   --primary-500: #22c55e;
   --primary-600: #16a34a;
   --primary-700: #15803d;
   --primary-800: #166534;
+  --primary-900: #14532d;
+  
+  /* Secondary - Trust & Professional */
+  --secondary-50: #eff6ff;
+  --secondary-100: #dbeafe;
+  --secondary-500: #3b82f6;
+  --secondary-600: #2563eb;
+  --secondary-700: #1d4ed8;
+  
+  /* Accent - Energy & Action */
+  --accent-50: #fdf4ff;
+  --accent-100: #fae8ff;
+  --accent-500: #d946ef;
+  --accent-600: #c026d3;
+  --accent-700: #a21caf;
+  
+  /* WhatsApp Integration */
+  --whatsapp-50: #f0fdf4;
+  --whatsapp-100: #dcfce7;
+  --whatsapp-500: #25D366;
+  --whatsapp-600: #20BA5A;
+  --whatsapp-700: #1BA94C;
   
   /* Neutral Colors */
   --gray-25: #fcfcfd;
@@ -22,6 +47,13 @@
   --gray-700: #374151;
   --gray-800: #1f2937;
   --gray-900: #111827;
+  
+  /* Marketing Gradients */
+  --gradient-success: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  --gradient-energy: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-600) 100%);
+  --gradient-trust: linear-gradient(135deg, var(--secondary-500) 0%, var(--secondary-600) 100%);
+  --gradient-whatsapp: linear-gradient(135deg, var(--whatsapp-500) 0%, var(--whatsapp-600) 100%);
+  --gradient-rainbow: linear-gradient(135deg, var(--primary-500) 0%, var(--secondary-500) 50%, var(--accent-500) 100%);
   
   /* Semantic Colors */
   --success-50: #f0fdf4;
@@ -84,7 +116,7 @@ body {
 
 /* Professional Button Styles */
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+  background: var(--gradient-success);
   color: white;
   border: none;
   border-radius: var(--radius-lg);
@@ -100,6 +132,32 @@ body {
   background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-800) 100%);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+}
+
+.btn-energy {
+  background: var(--gradient-energy);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+
+.btn-whatsapp {
+  background: var(--gradient-whatsapp);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
 }
 
 .btn-primary:active:not(:disabled) {
@@ -207,13 +265,30 @@ body {
   display: none;
 }
 
-/* WhatsApp Green */
+/* Marketing Theme Classes */
+.bg-gradient-success { background: var(--gradient-success); }
+.bg-gradient-energy { background: var(--gradient-energy); }
+.bg-gradient-trust { background: var(--gradient-trust); }
+.bg-gradient-whatsapp { background: var(--gradient-whatsapp); }
+.bg-gradient-rainbow { background: var(--gradient-rainbow); }
+
+.text-primary { color: var(--primary-500); }
+.text-secondary { color: var(--secondary-500); }
+.text-accent { color: var(--accent-500); }
+.text-whatsapp { color: var(--whatsapp-500); }
+
+.bg-primary { background-color: var(--primary-500); }
+.bg-secondary { background-color: var(--secondary-500); }
+.bg-accent { background-color: var(--accent-500); }
+.bg-whatsapp { background-color: var(--whatsapp-500); }
+
+/* WhatsApp Integration */
 .whatsapp-green {
-  background-color: #25D366;
+  background-color: var(--whatsapp-500);
 }
 
 .whatsapp-green:hover {
-  background-color: #20BA5A;
+  background-color: var(--whatsapp-600);
 }
 
 /* Mobile Touch Targets */
