@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Mail, Lock, Eye, EyeOff, Store, User, Building, Phone, CheckCircle, AlertCircle, Lightbulb } from 'lucide-react'
 import { useAuth } from '../App'
 import { authAPI } from '../services/api'
@@ -10,7 +10,8 @@ import HelpTooltip from './ui/HelpTooltip'
 const Login = () => {
   const { login } = useAuth()
   const navigate = useNavigate()
-  const [mode, setMode] = useState('login') // 'login', 'signup', 'verify'
+  const location = useLocation()
+  const [mode, setMode] = useState(location.pathname === '/signup' ? 'signup' : 'login') // 'login', 'signup', 'verify'
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -134,12 +135,12 @@ const Login = () => {
             <Store className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-green-500 to-blue-500 bg-clip-text text-transparent mb-2">
-            {mode === 'login' ? 'Welcome Back! 👋' : 'Create Your Store 🎆'}
+            {mode === 'login' ? 'Welcome Back! 👋' : 'Turn Your WhatsApp Into a Professional Store 🎆'}
           </h1>
           <p className="text-gray-600">
             {mode === 'login' 
-              ? 'Sign in to manage your business and track your success' 
-              : 'Join thousands of successful vendors. Start selling online in just 3 minutes!'}
+              ? 'Sign in to manage your professional storefront and organized orders' 
+              : 'Stop sending blurry photos in chats. Get a beautiful, professional link that showcases all your products!'}
           </p>
           
           {mode === 'signup' && (
@@ -147,15 +148,15 @@ const Login = () => {
               <div className="flex items-center justify-center space-x-4 text-sm">
                 <div className="flex items-center space-x-1">
                   <CheckCircle className="w-4 h-4 text-primary" />
-                  <span className="text-primary">Free to start</span>
+                  <span className="text-primary">Professional storefront</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <CheckCircle className="w-4 h-4 text-primary" />
-                  <span className="text-primary">No monthly fees</span>
+                  <span className="text-primary">Organized orders</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <CheckCircle className="w-4 h-4 text-primary" />
-                  <span className="text-primary">Easy setup</span>
+                  <span className="text-primary">New customers</span>
                 </div>
               </div>
             </div>
@@ -186,11 +187,11 @@ const Login = () => {
                       <div className="flex items-start space-x-3">
                         <Lightbulb className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
                         <div>
-                          <h4 className="font-semibold text-blue-900 mb-1">Quick Setup Tips</h4>
+                          <h4 className="font-semibold text-blue-900 mb-1">Transform Your Business</h4>
                           <ul className="text-sm text-blue-700 space-y-1">
-                            <li>• Use your real business name for customer trust</li>
-                            <li>• Choose a strong password to keep your account secure</li>
-                            <li>• Use your WhatsApp number for easy customer contact</li>
+                            <li>• Turn chaotic WhatsApp chats into organized orders</li>
+                            <li>• Get a professional storefront that builds trust</li>
+                            <li>• Reach new customers through our platform</li>
                           </ul>
                         </div>
                       </div>
@@ -327,11 +328,11 @@ const Login = () => {
             
             {mode === 'login' && (
               <div className="mt-4 p-3 bg-gray-50 rounded-2xl">
-                <p className="text-sm text-gray-600 mb-2">🎆 <strong>New here?</strong> Join thousands of successful vendors!</p>
+                <p className="text-sm text-gray-600 mb-2">🎆 <strong>Ready to grow?</strong> Stop losing sales from chaotic chats!</p>
                 <div className="flex justify-center space-x-4 text-xs text-gray-500">
-                  <span>• Free to start</span>
-                  <span>• Easy setup</span>
-                  <span>• Instant store</span>
+                  <span>• Professional storefront</span>
+                  <span>• Organized orders</span>
+                  <span>• New customers</span>
                 </div>
               </div>
             )}

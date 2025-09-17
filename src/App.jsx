@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, createContext, useContext, useEffect } from 'react'
 import { authAPI } from './services/api'
 import Navbar from './components/ui/Navbar'
+import LandingPage from './components/LandingPage'
 import Login from './components/Login'
 import ForgotPassword from './components/auth/ForgotPassword'
 import Dashboard from './components/Dashboard'
@@ -102,6 +103,10 @@ function App() {
               element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} 
             />
             <Route 
+              path="/signup" 
+              element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" />} 
+            />
+            <Route 
               path="/forgot-password" 
               element={!isAuthenticated ? <ForgotPassword /> : <Navigate to="/dashboard" />} 
             />
@@ -150,7 +155,7 @@ function App() {
               path="/test-login" 
               element={<TestLogin />} 
             />
-            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+            <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />} />
           </Routes>
         </div>
       </Router>

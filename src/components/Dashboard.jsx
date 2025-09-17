@@ -10,6 +10,7 @@ import HelpTooltip from './ui/HelpTooltip'
 import GuidedTour from './ui/GuidedTour'
 import OnboardingChecklist from './ui/OnboardingChecklist'
 
+
 const Dashboard = () => {
   const { vendor } = useAuth()
   const navigate = useNavigate()
