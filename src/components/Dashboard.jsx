@@ -54,7 +54,7 @@ const Dashboard = () => {
   }, [])
 
   const getStoreUrl = () => {
-    return `${window.location.origin.replace('5173', '5174')}/store/${vendor?._id}`
+    return `https://vendly-buyer.vercel.app/store/${vendor?._id}`
   }
 
   const handleShareStore = () => {

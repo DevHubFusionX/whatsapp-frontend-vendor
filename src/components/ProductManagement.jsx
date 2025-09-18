@@ -44,7 +44,7 @@ const ProductManagement = () => {
   }
 
   const handleShareProduct = (product) => {
-    const storeUrl = `${window.location.origin.replace('5173', '5174')}/product/${product._id}`
+    const storeUrl = `https://vendly-buyer.vercel.app/product/${product._id}`
     const message = `🛍️ Check out this amazing product!\n\n📦 ${product.name}\n💰 ₦${product.price.toLocaleString()}${product.description ? `\n\n${product.description}` : ''}\n\n🔗 View details: ${storeUrl}\n\n#OnlineShopping #QualityProducts`
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
