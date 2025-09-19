@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Plus, Edit, Trash2, Share2, Upload, Search, Filter, Package, HelpCircle, TrendingUp, Eye, Users, AlertCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { productsAPI } from '../services/api'
+import SocialShare from './ui/SocialShare'
 import HelpTooltip from './ui/HelpTooltip'
 import { useToast } from '../hooks/useToast'
 import Toast from './ui/Toast'
@@ -43,13 +44,7 @@ const ProductManagement = () => {
     }
   }
 
-  const handleShareProduct = (product) => {
-    const storeUrl = `https://vendly-buyer.vercel.app/product/${product._id}`
-    const message = `🛍️ Check out this amazing product!\n\n📦 ${product.name}\n💰 ₦${product.price.toLocaleString()}${product.description ? `\n\n${product.description}` : ''}\n\n🔗 View details: ${storeUrl}\n\n#OnlineShopping #QualityProducts`
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, '_blank')
-    success('📱 WhatsApp opened! Share this product with your customers to boost sales!')
-  }
+
 
   const getProductStatus = (product) => {
     return product.isActive !== false 
@@ -311,16 +306,10 @@ const ProductManagement = () => {
                         </button>
                       </div>
                       
-                      <button
-                        onClick={() => handleShareProduct(product)}
-                        className="group flex items-center space-x-2 bg-gradient-whatsapp text-white px-4 py-3 rounded-2xl text-sm font-semibold hover:opacity-90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 relative"
-                      >
-                        <Share2 className="w-4 h-4" />
-                        <span>Share</span>
-                        <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                          Share to customers
-                        </div>
-                      </button>
+                      <SocialShare 
+                        product={product}
+                        productUrl={`${window.location.origin.replace('5173', '5174')}/product/${product._id}`}
+                      />
                     </div>
                   </div>
                 </div>
