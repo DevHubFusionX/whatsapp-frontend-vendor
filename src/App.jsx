@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useState, createContext, useContext, useEffect } from 'react'
 import { authAPI } from './services/api'
 import Navbar from './components/ui/Navbar'
+import LoadingSplash from './components/ui/LoadingSplash'
 import LandingPage from './components/LandingPage'
 import Login from './components/Login'
 import ForgotPassword from './components/auth/ForgotPassword'
@@ -31,6 +32,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [vendor, setVendor] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [showSplash, setShowSplash] = useState(true)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -78,10 +80,14 @@ function App() {
     localStorage.removeItem('loginTime')
   }
 
+  if (showSplash) {
+    return <LoadingSplash onComplete={() => setShowSplash(false)} />
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     )
   }
