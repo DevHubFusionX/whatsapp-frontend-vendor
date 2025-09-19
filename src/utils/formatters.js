@@ -30,7 +30,7 @@ export const generateWhatsAppMessage = (product, vendorName) => {
 }
 
 // Validate file type and size
-export const validateFile = (file, maxSizeMB = 5, allowedTypes = ['image/jpeg', 'image/png', 'image/webp']) => {
+export const validateFile = (file, maxSizeMB = 15, allowedTypes = ['image/jpeg', 'image/png', 'image/webp']) => {
   const errors = []
   
   if (!allowedTypes.includes(file.type)) {

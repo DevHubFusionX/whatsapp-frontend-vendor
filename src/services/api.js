@@ -33,13 +33,13 @@ api.interceptors.response.use(
 
 export const authAPI = {
   register: (userData) => api.post('/auth/vendor/register', userData),
-  login: (credentials) => api.post('/auth/login', credentials),
+  login: (credentials) => api.post('/auth/vendor/login', credentials),
   verifyOTP: (email, otp) => api.post('/auth/vendor/verify-otp', { email, otp }),
-  resendOTP: (email) => api.post('/auth/resend-otp', { email }),
+  resendOTP: (email) => api.post('/auth/vendor/resend-otp', { email }),
   getMe: () => api.get('/auth/me'),
-  vendorForgotPassword: (data) => api.post('/auth/forgot-password', data),
-  vendorVerifyOTP: (data) => api.post('/auth/verify-reset-otp', data),
-  vendorResetPassword: (data) => api.post('/auth/reset-password', data)
+  vendorForgotPassword: (data) => api.post('/auth/vendor/forgot-password', data),
+  vendorVerifyOTP: (data) => api.post('/auth/vendor/verify-reset-otp', data),
+  vendorResetPassword: (data) => api.post('/auth/vendor/reset-password', data)
 };
 
 export const productsAPI = {
